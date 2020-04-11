@@ -6,7 +6,6 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 // screens
 import Home from '../screens/Home';
-import HomeMap from '../screens/homeMap';
 import Pro from '../screens/Pro';
 import Profile from '../screens/Profile';
 import Register from '../screens/Register';
@@ -20,6 +19,7 @@ import CustomDrawerContent from "./Menu";
 import { Header, Icon} from '../components';
 import { nowTheme, tabs } from "../constants";
 import homeMap from '../screens/homeMap';
+import OnstartMap from '../screens/OnstartMap';
 
 const { width } = Dimensions.get("screen");
 
@@ -202,6 +202,18 @@ function HomeMapStack(props) {
     </Stack.Navigator>
   );
 }
+function OnstartMapStack(props) {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Select your home location on the map" component={OnstartMap} options={{
+        navigationOptions:({ navigation, scene }) => ({ 
+          header: <Header title="Select your home location on the map..." navigation={navigation} scene={scene} />
+         }),
+         backgroundColor: "#000000"
+      }}/>
+    </Stack.Navigator>
+  );
+}
 
 function AppStack(props) {
   return (
@@ -255,6 +267,7 @@ export default function OnboardingStack(props) {
           headerTransparent: true
         }}
       />
+      <Stack.Screen name="OnstartMap" component={OnstartMapStack} />
       <Stack.Screen name="App" component={AppStack} />
     </Stack.Navigator>
   );

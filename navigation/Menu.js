@@ -28,7 +28,7 @@ function CustomDrawerContent({
   const screens = [
     "Home",
     "Components",
-    "Articles",
+    //"Articles",
     "Profile",
     "Account",
     "Home Map"

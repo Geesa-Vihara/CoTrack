@@ -134,7 +134,7 @@ class Header extends React.Component {
         >
           <Block row middle>
             <Icon
-              name="bulb"
+              name="single"
               family="NowExtra"
               size={18}
               style={{ paddingRight: 8 }}
@@ -149,7 +149,7 @@ class Header extends React.Component {
           <Block row middle>
             <Icon
               size={18}
-              name="bag-162x"
+              name="world2x"
               family="NowExtra"
               style={{ paddingRight: 8 }}
               color={nowTheme.COLORS.HEADER}

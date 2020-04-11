@@ -1,42 +1,123 @@
 import React from "react";
-import { StyleSheet, Dimensions, ScrollView } from "react-native";
-import { Block, theme, Text } from "galio-framework";
+import { StyleSheet, Dimensions,View,Text, AsyncStorage } from "react-native";
+import MapView,{Marker} from "react-native-maps";
+import * as Location from 'expo-location';
 
-import { Card, Button } from "../components";
-import articles from "../constants/articles";
-const { width } = Dimensions.get("screen");
 
-class homeMap extends React.Component {
-  renderMap = () => {
-    return (
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.articles}
-      >
-      </ScrollView>
-    );
-  };
 
+export default class homeMap extends React.Component {
+state={
+  coords :{
+    latitude: 0,
+    longitude: 0,
+    
+},
+  mapRegion: null,
+  hasLocationPermissions: false,
+  locationResult: null
+}
+
+componentDidMount(){
+  AsyncStorage.getItem('longitude', (err, result) => {
+    this.setState(prevState => ({
+      coords: {                   
+          ...prevState.coords,    
+          longitude: Number(result)  
+      }
+  }))
+  });
+  AsyncStorage.getItem('latitude', (err, result) => {
+    this.setState(prevState => ({
+      coords: {                   
+          ...prevState.coords,    
+          latitude: Number(result)  
+      }
+  }))
+  });
+  //this.getLocationAsync();
+}
+/*
+async getLocationAsync (){
+  let { status } = await Location.requestPermissionsAsync();
+  if (status !== 'granted') {
+    this.setState({
+      locationResult: 'Permission to access location was denied',
+    });
+  } else {
+    this.setState({ hasLocationPermissions: true });
+  }
+
+  let location = await Location.getCurrentPositionAsync({});
+  this.setState({ locationResult: JSON.stringify(location) });
+  this.setState(prevState => ({
+    coords: {                   
+        ...prevState.coords,    
+        longitude: location.coords.longitude      
+    }
+}))
+  this.setState(prevState => ({
+    coords: {                   
+        ...prevState.coords,    
+        latitude: location.coords.latitude      
+    }
+  }))
+  // Center the map on the location we just fetched.
+   this.setState({mapRegion: { latitude: location.coords.latitude, longitude: location.coords.longitude, latitudeDelta: 0.0922, longitudeDelta: 0.0421 }});
+ } */
+
+ handlePress=async(e)=>{
+  let coordinate=await e.nativeEvent.coordinate;
+  let longitude=await coordinate.longitude;
+  let latitude=await coordinate.latitude;
+  this.setState(prevState => ({
+    coords: {                   
+        ...prevState.coords,    
+        longitude: longitude 
+    }
+}))
+  this.setState(prevState => ({
+    coords: {                   
+        ...prevState.coords,    
+        latitude: latitude     
+    }
+  }))
+  await AsyncStorage.setItem("longitude",String(longitude) );
+  await AsyncStorage.setItem("latitude",String(latitude));
+ }
   render() {
     return (
-      <Block flex center style={styles.homeMap}>
-        {this.renderMap()}
-      </Block>
+      <MapView
+        style={{
+          flex: 1
+        }}
+        initialRegion={{
+          latitude: 7.8731,
+          longitude: 80.7718,
+          latitudeDelta: 3,
+          longitudeDelta: 3
+        }}
+        onPress={this.handlePress}
+      >
+            <Marker
+            coordinate={this.state.coords}
+            title="My Home"
+         />
+      </MapView>
+      
+   
     );
   }
 }
 
 const styles = StyleSheet.create({
-  homeMap: {
-    width: width
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  articles: {
-    width: width - theme.SIZES.BASE * 2,
-    paddingVertical: theme.SIZES.BASE,
-    paddingHorizontal: 2,
-    fontFamily: 'montserrat-regular'
-
-  }
+  mapStyle: {
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+  },
 });
-
-export default homeMap;

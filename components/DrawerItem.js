@@ -89,6 +89,16 @@ class DrawerItem extends React.Component {
             color={focused ? nowTheme.COLORS.PRIMARY : "white"}
           />
         );
+        case "Home Map":
+          return (
+            <Icon
+              name="map"
+              family="FontAwesome5 (solid)"
+              size={18}
+              style={{ borderColor: "rgba(0,0,0,0.5)", opacity: 0.5 }}
+              color={focused ? nowTheme.COLORS.PRIMARY : "white"}
+            />
+          );
       case "LOGOUT":
         return (
           <Icon
