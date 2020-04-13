@@ -2,8 +2,7 @@ import React from "react";
 import { StyleSheet, Dimensions,View,Text, AsyncStorage } from "react-native";
 import MapView,{Marker} from "react-native-maps";
 import * as Location from 'expo-location';
-
-
+import * as TaskManager from 'expo-task-manager';
 
 export default class homeMap extends React.Component {
 state={
@@ -39,8 +38,6 @@ componentDidMount(){
 
 
  handlePress=async(e)=>{
-   
-  await TaskManager.unregisterAllTasksAsync()
   let coordinate=await e.nativeEvent.coordinate;
   let longitude=await coordinate.longitude;
   let latitude=await coordinate.latitude;
@@ -63,6 +60,7 @@ componentDidMount(){
     longitude:longitude
 }
   const radius = 50;
+  await TaskManager.unregisterAllTasksAsync()
   await Location.startGeofencingAsync('checkHomeTask', [
       {
         ...latLng,

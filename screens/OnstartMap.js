@@ -7,7 +7,16 @@ import { nowTheme } from '../constants/';
 const { height, width } = Dimensions.get('screen');
 import * as TaskManager from 'expo-task-manager';
 import { Notifications } from 'expo';
+import { Audio } from 'expo-av';
 
+Audio.setAudioModeAsync({
+  staysActiveInBackground:true,
+  allowsRecordingIOS: false,
+  interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
+  playsInSilentModeIOS: true,
+  shouldDuckAndroid: true,
+  interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
+});
 export default class OnstartMap extends React.Component {
   
   constructor(props){
@@ -32,8 +41,15 @@ async componentDidMount() {
   this._notificationSubscription = Notifications.addListener(this._handleNotification); 
 }
 
-_handleNotification = notification => {
+_handleNotification = async(notification) => {
   Vibration.vibrate();
+  if(notification.origin==="received" && notification.data['data']==="hands"){
+    this.handSound();
+  }
+  else if(notification.origin==="received" && notification.data['data']==="mask"){
+    this.maskSound();
+  }
+  
   console.log(notification);
   this.setState({ notification: notification });
   if(notification.origin==="selected" && notification.data['data']==="hands"){
@@ -45,6 +61,31 @@ static getExpoPushToken=async()=>{
   var token=await AsyncStorage.getItem("expoPushToken");  
   return token;
 }
+
+handSound = async () => {
+  try {
+    
+      let soundObject  = new Audio.Sound();
+      await soundObject.loadAsync(require('../assets/sounds/handsfemale.mp3'));
+      await soundObject.playAsync();     
+
+  } catch (error) {
+      //console.log("error"+error);
+  }
+}
+
+maskSound = async () => {
+  try {
+    
+      let soundObject  = new Audio.Sound();
+      await soundObject.loadAsync(require('../assets/sounds/maskfemale.mp3'));
+      await soundObject.playAsync();        
+
+  } catch (error) {
+      //console.log("error"+error);
+  }
+}
+
 
 nextpage=async()=>{
   

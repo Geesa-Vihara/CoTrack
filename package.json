@@ -35,7 +35,8 @@
     "react-native-safe-area-context": "0.6.0",
     "react-native-screens": "2.0.0-alpha.12",
     "react-native-maps": "0.26.1",
-    "expo-task-manager": "~8.0.0"
+    "expo-task-manager": "~8.0.0",
+    "expo-av": "~8.0.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.0.3",
