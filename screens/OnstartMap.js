@@ -1,28 +1,54 @@
 import React from "react";
-import { StyleSheet, Dimensions,View, AsyncStorage } from "react-native";
+import { StyleSheet, Dimensions,View, AsyncStorage,Vibration } from "react-native";
 import MapView,{Marker} from "react-native-maps";
 import * as Location from 'expo-location';
 import { Button,Block,theme,Text } from "galio-framework";
 import { nowTheme } from '../constants/';
 const { height, width } = Dimensions.get('screen');
 import * as TaskManager from 'expo-task-manager';
+import { Notifications } from 'expo';
 
 export default class OnstartMap extends React.Component {
- 
-state={
-  coords :{
-    latitude: 7.8731,
-    longitude: 80.7718,
-},
-  mapRegion: null,
-  hasLocationPermissions: false,
-  locationResult: null
+  
+  constructor(props){
+    super(props);
+    this.state={
+      coords :{
+        latitude: 0,
+        longitude: 0,
+    },
+      mapRegion: null,
+      hasLocationPermissions: false,
+      locationResult: null,
+      notification: {},
+    }
+  } 
+
+async componentDidMount() {
+  
+  console.log("onstartcdm"+await TaskManager.getRegisteredTasksAsync())
+  await TaskManager.unregisterAllTasksAsync()
+  this.getLocationAsync();  
+  this._notificationSubscription = Notifications.addListener(this._handleNotification); 
 }
 
-componentDidMount() {
-  this.getLocationAsync();
+_handleNotification = notification => {
+  Vibration.vibrate();
+  console.log(notification);
+  this.setState({ notification: notification });
+  if(notification.origin==="selected" && notification.data['data']==="hands"){
+    console.log("OHHHHHHHHHH")
+  }
+};
+
+static getExpoPushToken=async()=>{
+  var token=await AsyncStorage.getItem("expoPushToken");  
+  return token;
 }
+
 nextpage=async()=>{
+  
+    console.log("onstartnp"+await TaskManager.getRegisteredTasksAsync())
     const longitude=this.state.coords.longitude;
     const latitude=this.state.coords.latitude;
     await AsyncStorage.setItem("longitude",String(longitude) );
@@ -31,19 +57,17 @@ nextpage=async()=>{
         latitude:latitude,
         longitude:longitude
     }
-    const radius = 100;
+    const radius = 50;
     await Location.startGeofencingAsync('checkHomeTask', [
         {
           ...latLng,
           radius
         }
-      ]); 
-      /* await Location.startLocationUpdatesAsync('checkHomeTask', {
-        accuracy: Location.Accuracy.Balanced,
-      }); */
+      ]);
     const {navigation}= this.props;
     navigation.navigate('App');
 }
+
 async getLocationAsync (){
   let { status } = await Location.requestPermissionsAsync();
   if (status !== 'granted') {
@@ -89,6 +113,7 @@ async getLocationAsync (){
     }
   }))
  }
+
   render() {
     return (
         <Block flex>
@@ -123,8 +148,9 @@ async getLocationAsync (){
                     Next
                   </Text>
                 </Button>
+                
             </Block>
-            //<Button>Next</Button>
+            
        
       
       
@@ -151,15 +177,54 @@ const styles = StyleSheet.create({
     shadowOpacity: 0
   },
 });
-TaskManager.defineTask('checkHomeTask', ({ data: { eventType, region }, error }) => {
+TaskManager.defineTask('checkHomeTask', async({ data: { eventType, region }, error }) => {
   if (error) {
     // check `error.message` for more details.
     return;
   }
   console.log(eventType);
-  if (eventType === Location.GeofencingEventType.Enter) {
+  
+  const token=await OnstartMap.getExpoPushToken()
+  console.log("token"+JSON.stringify(token))
+  if (eventType === Location.GeofencingEventType.Enter) {    
     console.log("You've entered region:", region);
+    const message = {
+      to: token,
+      sound: 'default',
+      title: 'Wecome Home!',
+      body: 'Remember to wash your hands before you see your loved ones!',
+      data: { data: 'hands' },
+      _displayInForeground: true,
+    };
+    const response = await fetch('https://exp.host/--/api/v2/push/send', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-encoding': 'gzip, deflate',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(message),
+    });
+    
+    
   } else if (eventType === Location.GeofencingEventType.Exit) {
     console.log("You've left region:", region);
+    const message = {
+      to: token,
+      sound: 'default',
+      title: 'Going Outside?',
+      body: 'Remember to wear a mask!',
+      data: { data: 'mask' },
+      _displayInForeground: true,
+    };
+    const response = await fetch('https://exp.host/--/api/v2/push/send', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-encoding': 'gzip, deflate',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(message),
+    });
   }
 });

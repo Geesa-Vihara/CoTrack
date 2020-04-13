@@ -5,6 +5,7 @@ import * as Font from 'expo-font';
 import { Asset } from 'expo-asset';
 import { Block, GalioProvider } from 'galio-framework';
 import { NavigationContainer } from '@react-navigation/native';
+import * as TaskManager from 'expo-task-manager';
 
 import Screens from './navigation/Screens';
 import { Images, articles, nowTheme } from './constants';
@@ -43,7 +44,10 @@ export default class App extends React.Component {
     fontLoaded: false
   };
 
-  async componentDidMount() { await Font.loadAsync({ 'montserrat-regular': require('./assets/font/Montserrat-Regular.ttf'), 'montserrat-bold': require('./assets/font/Montserrat-Bold.ttf') } ); this.setState({fontLoaded: true, isLoadingComplete: true}); }
+  async componentDidMount() { 
+    await TaskManager.unregisterAllTasksAsync()
+    console.log("app"+await TaskManager.getRegisteredTasksAsync())
+    await Font.loadAsync({ 'montserrat-regular': require('./assets/font/Montserrat-Regular.ttf'), 'montserrat-bold': require('./assets/font/Montserrat-Bold.ttf') } ); this.setState({fontLoaded: true, isLoadingComplete: true}); }
 
   render() {
     if (!this.state.isLoadingComplete) {
