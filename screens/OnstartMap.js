@@ -34,7 +34,6 @@ export default class OnstartMap extends React.Component {
   } 
 
 async componentDidMount() {
-  
   console.log("onstartcdm"+await TaskManager.getRegisteredTasksAsync())
   await TaskManager.unregisterAllTasksAsync()
   this.getLocationAsync();  
@@ -53,7 +52,8 @@ _handleNotification = async(notification) => {
   console.log(notification);
   this.setState({ notification: notification });
   if(notification.origin==="selected" && notification.data['data']==="hands"){
-    console.log("OHHHHHHHHHH")
+    const {navigation}= this.props;
+    navigation.navigate('HandWash');
   }
 };
 
@@ -105,6 +105,7 @@ nextpage=async()=>{
           radius
         }
       ]);
+
     const {navigation}= this.props;
     navigation.navigate('App');
 }

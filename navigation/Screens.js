@@ -20,6 +20,7 @@ import { Header, Icon} from '../components';
 import { nowTheme, tabs } from "../constants";
 import homeMap from '../screens/homeMap';
 import OnstartMap from '../screens/OnstartMap';
+import handWash from '../screens/handWash';
 
 const { width } = Dimensions.get("screen");
 
@@ -124,6 +125,19 @@ function ProfileStack(props) {
   );
 }
 
+function handWashStack(props) {
+  return (
+    <Stack.Navigator initialRouteName="Profile" mode="card" headerMode="none">
+      <Stack.Screen
+        name="How to correctly wash your hands"
+        component={handWash}
+        
+      />
+      
+    </Stack.Navigator>
+  );
+}
+
 function HomeStack(props) {
   return (
     <Stack.Navigator mode="card" headerMode="screen">
@@ -211,6 +225,7 @@ function OnstartMapStack(props) {
          }),
          backgroundColor: "#000000"
       }}/>
+      
     </Stack.Navigator>
   );
 }
@@ -253,6 +268,7 @@ function AppStack(props) {
       <Drawer.Screen name="Account" component={AccountStack} />
       <Drawer.Screen name="Settings" component={AccountStack} />
       <Drawer.Screen name="Home Map" component={HomeMapStack} />
+      <Drawer.Screen name="HandWash" component={handWashStack} />
     </Drawer.Navigator>
   );
 }

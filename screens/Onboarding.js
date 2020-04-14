@@ -50,7 +50,7 @@ export default class Onboarding extends React.Component {
   };
   async componentDidMount() { 
     
-    //await TaskManager.unregisterAllTasksAsync()
+    await TaskManager.unregisterAllTasksAsync()
     console.log("onboard"+await TaskManager.getRegisteredTasksAsync())
     this.registerForPushNotificationsAsync();
   }
