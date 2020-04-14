@@ -54,6 +54,9 @@ _handleNotification = async(notification) => {
   if(notification.origin==="selected" && notification.data['data']==="hands"){
     const {navigation}= this.props;
     navigation.navigate('HandWash');
+  }else if(notification.origin==="selected" && notification.data['data']==="mask"){
+    const {navigation}= this.props;
+    navigation.navigate('PutMask');
   }
 };
 
