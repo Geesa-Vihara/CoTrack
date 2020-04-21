@@ -18,9 +18,8 @@ const DismissKeyboard = ({ children }) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>{children}</TouchableWithoutFeedback>
 );
 
-class Register extends React.Component {
+class Login extends React.Component {
   state = {
-    name: '',
     email: '',
     password: ''
   }
@@ -31,6 +30,7 @@ class Register extends React.Component {
   }
 
   render() {
+    const { navigation } = this.props;
     return (
       <DismissKeyboard>
         <Block flex middle>
@@ -40,23 +40,25 @@ class Register extends React.Component {
             imageStyle={styles.imageBackground}
           >
             <Block flex middle>
-              <Block style={styles.registerContainer}>
+              <Block style={styles.loginContainer}>
                 <Block flex space="evenly">
                   <Block flex={0.4} middle style={styles.socialConnect}>
-                    <Block flex={0.5} middle>
+                    <Block flex={0.5} middle style={{ marginTop:18, marginBottom: 18 }}>
                       <Text
                         style={{
                           fontFamily: 'montserrat-regular',
-                          textAlign: 'center'
+                          textAlign: 'center',
+                          paddingTop: 10,
+                          paddingBottom:20
                         }}
                         color="#333"
                         size={24}
                       >
-                        Register
+                        Login
                       </Text>
                     </Block>
 
-                    <Block flex={0.5} row middle space="between" style={{ marginBottom: 18 }}>
+                    <Block flex={0.5} row middle space="between" style={{ marginTop:18, marginBottom: 28 }}>
                       <GaButton
                         round
                         onlyIcon
@@ -109,22 +111,6 @@ class Register extends React.Component {
                     <Block center flex={0.9}>
                       <Block flex space="between">
                         <Block>
-                          <Block width={width * 0.8} style={{ marginBottom: 5 }}>
-                            <Input
-                              placeholder="Full Name"
-                              style={styles.inputs}
-                              onChangeText={text => this.handleChange('name', text)}
-                              iconContent={
-                                <Icon
-                                  size={16}
-                                  color="#ADB5BD"
-                                  name="profile-circle"
-                                  family="NowExtra"
-                                  style={styles.inputIcons}
-                                />
-                              }
-                            />
-                          </Block>
                           <Block width={width * 0.8}>
                             <Input
                               placeholder="Email"
@@ -185,9 +171,14 @@ class Register extends React.Component {
                               size={14}
                               color={nowTheme.COLORS.WHITE}
                             >
-                              Register
+                              Login
                             </Text>
                           </Button>
+                          <Button color="transparent" shadowless style={styles.link} onPress={() => navigation.push('Register')}>
+                            <Text center color={theme.COLORS.ERROR} size={theme.SIZES.FONT * 0.75}>
+                            {"Don't have an account? Sign Up"}
+                            </Text>
+                        </Button>
                         </Block>
                       </Block>
                     </Block>
@@ -213,11 +204,11 @@ const styles = StyleSheet.create({
     width: width,
     height: height
   },
-  registerContainer: {
+  loginContainer: {
     marginTop: 55,
     marginBottom: 55,
     width: width * 0.9,
-    height: height < 812 ? height * 0.8 : height * 0.8,
+    height: 450,
     backgroundColor: nowTheme.COLORS.WHITE,
     borderRadius: 4,
     shadowColor: nowTheme.COLORS.BLACK,
@@ -272,6 +263,10 @@ const styles = StyleSheet.create({
     marginTop: 25,
     marginBottom: 40
   },
+  link: {
+    width: width * 0.5,
+    marginBottom: 40
+  },
   social: {
     width: theme.SIZES.BASE * 3.5,
     height: theme.SIZES.BASE * 3.5,
@@ -281,4 +276,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Register;
+export default Login;
