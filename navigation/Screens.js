@@ -8,6 +8,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Home from '../screens/Home';
 import Pro from '../screens/Pro';
 import Profile from '../screens/Profile';
+import Login from '../screens/Login';
 import Register from '../screens/Register';
 import Components from '../screens/Components';
 import Articles from '../screens/Articles';
@@ -223,6 +224,20 @@ function OnstartMapStack(props) {
         navigationOptions:({ navigation, scene }) => ({ 
           header: <Header title="Select your home location on the map..." navigation={navigation} scene={scene} />
          }),
+         backgroundColor: "#000000",
+      }}/>
+      
+    </Stack.Navigator>
+  );
+}
+
+function RegisterStack(props) {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Register" component={Register} options={{
+        navigationOptions:({ navigation, scene }) => ({ 
+          header: <Header title="Select your home location on the map..." navigation={navigation} scene={scene} />
+         }),
          backgroundColor: "#000000"
       }}/>
       
@@ -276,7 +291,8 @@ function AppStack(props) {
 export default function OnboardingStack(props) {
   return (
     <Stack.Navigator mode="card" headerMode="none">
-      <Stack.Screen name="Register" component={Register} />
+      <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="Register" component={RegisterStack} />
       {/* <Stack.Screen
         name="Onboarding"
         component={Onboarding}
