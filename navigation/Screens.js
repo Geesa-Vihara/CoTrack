@@ -22,6 +22,7 @@ import { nowTheme, tabs } from "../constants";
 import homeMap from '../screens/homeMap';
 import OnstartMap from '../screens/OnstartMap';
 import handWash from '../screens/handWash';
+import putMask from '../screens/putMask';
 
 const { width } = Dimensions.get("screen");
 
@@ -128,10 +129,23 @@ function ProfileStack(props) {
 
 function handWashStack(props) {
   return (
-    <Stack.Navigator initialRouteName="Profile" mode="card" headerMode="none">
+    <Stack.Navigator initialRouteName="HandWash" mode="card" headerMode="none">
       <Stack.Screen
         name="How to correctly wash your hands"
         component={handWash}
+        
+      />
+      
+    </Stack.Navigator>
+  );
+}
+
+function putMaskStack(props) {
+  return (
+    <Stack.Navigator initialRouteName="PutMask" mode="card" headerMode="none">
+      <Stack.Screen
+        name="How to correctly put on a mask"
+        component={putMask}
         
       />
       
@@ -283,7 +297,8 @@ function AppStack(props) {
       <Drawer.Screen name="Account" component={AccountStack} />
       <Drawer.Screen name="Settings" component={AccountStack} />
       <Drawer.Screen name="Home Map" component={HomeMapStack} />
-      <Drawer.Screen name="HandWash" component={handWashStack} />
+      <Drawer.Screen name="HandWash" component={handWashStack} />      
+      <Drawer.Screen name="PutMask" component={putMaskStack} />
     </Drawer.Navigator>
   );
 }
