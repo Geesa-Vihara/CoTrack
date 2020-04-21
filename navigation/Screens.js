@@ -306,15 +306,20 @@ function AppStack(props) {
 export default function OnboardingStack(props) {
   return (
     <Stack.Navigator mode="card" headerMode="none">
-      <Stack.Screen name="Login" component={Login} />
-      <Stack.Screen name="Register" component={RegisterStack} />
-      {/* <Stack.Screen
+
+      {/* Auth Navigation */}
+      {/* <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="Register" component={RegisterStack} /> */}
+
+      {/* Nvigation without auth */}
+      <Stack.Screen
         name="Onboarding"
         component={Onboarding}
         option={{
           headerTransparent: true
         }}
-      /> */}
+      />
+
       <Stack.Screen name="OnstartMap" component={OnstartMapStack} />
       <Stack.Screen name="App" component={AppStack} />
     </Stack.Navigator>
