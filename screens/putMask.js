@@ -4,18 +4,16 @@ import { Button, Text, theme } from 'galio-framework';
 import { nowTheme } from '../constants/';
 
 const images = [
-    require("../assets/carousel/a.jpg"),
-    require("../assets/carousel/b.jpg"),
-    require("../assets/carousel/c.jpg"),
-    require("../assets/carousel/d.jpg"),
-    require("../assets/carousel/e.jpg"),
-    require("../assets/carousel/f.jpg"),
-    require("../assets/carousel/g.jpg"),
-    require("../assets/carousel/h.jpg")  
+    require("../assets/carousel/m0.png"),
+    require("../assets/carousel/m1.png"),
+    require("../assets/carousel/m2.png"),
+    require("../assets/carousel/m3.png"),
+    require("../assets/carousel/m4.png"),
+    require("../assets/carousel/m5.png")
   ];
 const DEVICE_WIDTH = Dimensions.get("screen").width;
 
-export default class handWash extends React.Component {
+export default class putMask extends React.Component {
   scrollRef = React.createRef();
   constructor(props) {
     super(props);
@@ -78,7 +76,9 @@ export default class handWash extends React.Component {
     const { selectedIndex } = this.state;
     return (
         <View style={{ height: "100%", width: "100%" }}>
-             <View style={{ height: "65%", width: "100%" }}>
+            
+             <View style={{ height: "100%", width: "100%" }}>
+                 
                 <ScrollView
                 horizontal
                 pagingEnabled
@@ -107,29 +107,7 @@ export default class handWash extends React.Component {
                 ))}
                 </View>        
             </View>
-      {this.state.timer===20?
-          <Button
-          shadowless
-          style={styles.button}
-          color={nowTheme.COLORS.PRIMARY}
-          onPress={this.startTimer}
-      >
-          <Text
-          style={{ fontFamily: 'montserrat-bold', fontSize: 14 }}
-          color={theme.COLORS.WHITE}
-          >
-          START 20 SECONDS!
-          </Text>
-      </Button>
-      
-      
-      :<Text></Text>}
-          
-        <Text style={{fontSize: 100, color: '#000',marginLeft:theme.SIZES.BASE*5}}>
-            {this.state.timer === 0 ?<Text style={{fontSize:50}}>Times Up!</Text>:this.state.timer.toString().length == 1?"00:0"+this.state.timer:"00:"+this.state.timer} 
-        </Text>
-      
-    </View>
+            </View>
      
       
     );
