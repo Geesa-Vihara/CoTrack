@@ -19,6 +19,17 @@ const DismissKeyboard = ({ children }) => (
 );
 
 class Register extends React.Component {
+  state = {
+    name: '',
+    email: '',
+    password: ''
+  }
+
+  handleChange = (name, value) => {
+    this.setState({ [name]: value });
+    console.log(this.state)
+  }
+
   render() {
     return (
       <DismissKeyboard>
@@ -62,11 +73,11 @@ class Register extends React.Component {
                         round
                         onlyIcon
                         shadowless
-                        icon="dribbble"
+                        icon="google"
                         iconFamily="Font-Awesome"
                         iconColor={theme.COLORS.WHITE}
                         iconSize={theme.SIZES.BASE * 1.625}
-                        color={nowTheme.COLORS.DRIBBBLE}
+                        color={nowTheme.COLORS.GOOGLE}
                         style={[styles.social, styles.shadow]}
                       />
                       <GaButton
@@ -100,8 +111,9 @@ class Register extends React.Component {
                         <Block>
                           <Block width={width * 0.8} style={{ marginBottom: 5 }}>
                             <Input
-                              placeholder="First Name"
+                              placeholder="Full Name"
                               style={styles.inputs}
+                              onChangeText={text => this.handleChange('name', text)}
                               iconContent={
                                 <Icon
                                   size={16}
@@ -113,25 +125,11 @@ class Register extends React.Component {
                               }
                             />
                           </Block>
-                          <Block width={width * 0.8} style={{ marginBottom: 5 }}>
-                            <Input
-                              placeholder="Last Name"
-                              style={styles.inputs}
-                              iconContent={
-                                <Icon
-                                  size={16}
-                                  color="#ADB5BD"
-                                  name="caps-small2x"
-                                  family="NowExtra"
-                                  style={styles.inputIcons}
-                                />
-                              }
-                            />
-                          </Block>
                           <Block width={width * 0.8}>
                             <Input
                               placeholder="Email"
                               style={styles.inputs}
+                              onChangeText={text => this.handleChange('email', text)}
                               iconContent={
                                 <Icon
                                   size={16}
@@ -143,7 +141,24 @@ class Register extends React.Component {
                               }
                             />
                           </Block>
-                          <Block
+                          <Block width={width * 0.8} style={{ marginBottom: 5 }}>
+                            <Input
+                              password
+                              placeholder="Password"
+                              style={styles.inputs}
+                              onChangeText={text => this.handleChange('password', text)}
+                              iconContent={
+                                <Icon
+                                  size={16}
+                                  color="#ADB5BD"
+                                  name="caps-small2x"
+                                  family="NowExtra"
+                                  style={styles.inputIcons}
+                                />
+                              }
+                            />
+                          </Block>
+                          {/* <Block
                             style={{ marginVertical: theme.SIZES.BASE, marginLeft: 15}}
                             row
                             width={width * 0.75}
@@ -161,16 +176,16 @@ class Register extends React.Component {
                               }}
                               label="I agree to the terms and conditions."
                             />
-                          </Block>
+                          </Block> */}
                         </Block>
                         <Block center>
-                          <Button color="primary" round style={styles.createButton}>
+                          <Button color="info" round style={styles.createButton} onPress={() => console.log(this.state)}>
                             <Text
                               style={{ fontFamily: 'montserrat-bold' }}
                               size={14}
                               color={nowTheme.COLORS.WHITE}
                             >
-                              Get Started
+                              Register
                             </Text>
                           </Button>
                         </Block>
@@ -200,6 +215,7 @@ const styles = StyleSheet.create({
   },
   registerContainer: {
     marginTop: 55,
+    marginBottom: 55,
     width: width * 0.9,
     height: height < 812 ? height * 0.8 : height * 0.8,
     backgroundColor: nowTheme.COLORS.WHITE,
