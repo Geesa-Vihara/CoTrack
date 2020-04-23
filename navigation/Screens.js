@@ -308,17 +308,17 @@ export default function OnboardingStack(props) {
     <Stack.Navigator mode="card" headerMode="none">
 
       {/* Auth Navigation */}
-      {/* <Stack.Screen name="Login" component={Login} />
-      <Stack.Screen name="Register" component={RegisterStack} /> */}
+      <Stack.Screen name="Login" component={Login} />
+      <Stack.Screen name="Register" component={RegisterStack} />
 
       {/* Nvigation without auth */}
-      <Stack.Screen
+      {/* <Stack.Screen
         name="Onboarding"
         component={Onboarding}
         option={{
           headerTransparent: true
         }}
-      />
+      /> */}
 
       <Stack.Screen name="OnstartMap" component={OnstartMapStack} />
       <Stack.Screen name="App" component={AppStack} />
