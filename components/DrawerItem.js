@@ -5,14 +5,14 @@ import { Block, Text, theme } from "galio-framework";
 import Icon from "./Icon";
 import nowTheme from "../constants/Theme";
 
-import { logOut } from "../actions/auth.js";
+import { logout } from "../actions/auth.js";
 
 class DrawerItem extends React.Component {
 
-  logOut = () => {
+  logout = () => {
     console.log('logout func');
     var res = false;
-    res = logOut();
+    res = logout();
 
     if(res){
       this.props.navigation.navigate('Login');
@@ -138,7 +138,7 @@ class DrawerItem extends React.Component {
     return (
       <TouchableOpacity
         style={{ height: 60 }}
-      onPress={title == "LOGOUT" ? this.logOut : () => {
+      onPress={title == "LOGOUT" ? this.logout : () => {
         title == "GETTING STARTED"
             ? Linking.openURL(
                 "https://demos.creative-tim.com/now-ui-pro-react-native/docs/"

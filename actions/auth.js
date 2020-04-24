@@ -20,10 +20,38 @@ export const signUp = async function signUp(data) {
     }
 }
 
-export const logOut = async function logOut() {
+export const login = async function login(credentials) {
+    try {
+        const response = Firebase.auth().signInWithEmailAndPassword(credentials.email, credentials.password);
+        return true
+    } catch (error) {
+        console.log('error', error);
+        return false
+    }
+}
+
+export const logout = async function logout() {
     try {
         const response = Firebase.auth().signOut()
         return true
+    } catch (error) {
+        console.log('error',error);
+        return false
+    }
+}
+
+export const getAuthState = async function getAuthState() {
+    try {
+        Firebase.auth().onAuthStateChanged(user => {
+            if (user) {
+              console.log('logged in');
+              return true
+            }
+            else{
+              console.log('not logged in');
+              return false
+            }
+        })
     } catch (error) {
         console.log('error',error);
         return false

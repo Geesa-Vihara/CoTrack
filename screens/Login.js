@@ -14,6 +14,9 @@ import { Images, nowTheme } from '../constants';
 
 const { width, height } = Dimensions.get('screen');
 
+import Firebase from "../config/firebase"
+import { login, getAuthState } from "../actions/auth.js";
+
 const DismissKeyboard = ({ children }) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>{children}</TouchableWithoutFeedback>
 );
@@ -28,6 +31,32 @@ class Login extends React.Component {
     this.setState({ [name]: value });
     console.log(this.state)
   }
+
+  handleSubmit = () => {
+    var res = false
+    console.log('state',this.state);
+    res = login(this.state);
+    // if(res){
+    //   this.props.navigation.navigate('App');
+    // }
+  }
+
+  componentDidMount = () => {
+    this.setState({emai:'',password:''});
+    try {
+      Firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+          console.log('logged in');
+          this.props.navigation.navigate('App');
+        }
+        else{
+          console.log('not logged in');
+        }
+      })
+    } catch (error) {
+      console.log(error)
+    }
+}
 
   render() {
     const { navigation } = this.props;
@@ -115,6 +144,7 @@ class Login extends React.Component {
                             <Input
                               placeholder="Email"
                               style={styles.inputs}
+                              value={this.state.email}
                               onChangeText={text => this.handleChange('email', text)}
                               iconContent={
                                 <Icon
@@ -165,7 +195,7 @@ class Login extends React.Component {
                           </Block> */}
                         </Block>
                         <Block center>
-                          <Button color="info" round style={styles.createButton} onPress={() => console.log(this.state)}>
+                          <Button color="info" round style={styles.createButton} onPress={this.handleSubmit}>
                             <Text
                               style={{ fontFamily: 'montserrat-bold' }}
                               size={14}
