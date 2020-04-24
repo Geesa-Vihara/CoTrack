@@ -33,12 +33,8 @@ class Login extends React.Component {
   }
 
   handleSubmit = () => {
-    var res = false
     console.log('state',this.state);
-    res = login(this.state);
-    // if(res){
-    //   this.props.navigation.navigate('App');
-    // }
+    login(this.state);
   }
 
   componentDidMount = () => {

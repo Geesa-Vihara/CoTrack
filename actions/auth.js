@@ -22,17 +22,16 @@ export const signUp = async function signUp(data) {
 
 export const login = async function login(credentials) {
     try {
-        const response = Firebase.auth().signInWithEmailAndPassword(credentials.email, credentials.password);
-        return true
+        const response = await Firebase.auth().signInWithEmailAndPassword(credentials.email, credentials.password);
     } catch (error) {
         console.log('error', error);
-        return false
+        alert(error)
     }
 }
 
 export const logout = async function logout() {
     try {
-        const response = Firebase.auth().signOut()
+        const response = await Firebase.auth().signOut()
         return true
     } catch (error) {
         console.log('error',error);
