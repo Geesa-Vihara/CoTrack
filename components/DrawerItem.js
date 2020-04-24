@@ -10,7 +10,6 @@ import { logout } from "../actions/auth.js";
 class DrawerItem extends React.Component {
 
   logout = () => {
-    console.log('logout func');
     var res = false;
     res = logout();
 
