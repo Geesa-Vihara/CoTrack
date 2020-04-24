@@ -11,6 +11,7 @@ import { Block, Checkbox, Text, Button as GaButton, theme } from 'galio-framewor
 
 import { Button, Icon, Input } from '../components';
 import { Images, nowTheme } from '../constants';
+import { signUp } from "../actions/auth.js";
 
 const { width, height } = Dimensions.get('screen');
 
@@ -19,6 +20,7 @@ const DismissKeyboard = ({ children }) => (
 );
 
 class Register extends React.Component {
+  
   state = {
     name: '',
     email: '',
@@ -28,6 +30,15 @@ class Register extends React.Component {
   handleChange = (name, value) => {
     this.setState({ [name]: value });
     console.log(this.state)
+  }
+
+  handleSubmit = () => {
+    var res = false
+    console.log('state',this.state);
+    res = signUp(this.state);
+    if(res){
+      this.props.navigation.navigate('App');
+    }
   }
 
   render() {
@@ -179,7 +190,7 @@ class Register extends React.Component {
                           </Block> */}
                         </Block>
                         <Block center>
-                          <Button color="info" round style={styles.createButton} onPress={() => console.log(this.state)}>
+                          <Button color="info" round style={styles.createButton} onPress={this.handleSubmit}>
                             <Text
                               style={{ fontFamily: 'montserrat-bold' }}
                               size={14}
