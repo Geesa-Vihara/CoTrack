@@ -10,6 +10,12 @@ import * as TaskManager from 'expo-task-manager';
 import Screens from './navigation/Screens';
 import { Images, articles, nowTheme } from './constants';
 
+import {decode, encode} from 'base-64'
+
+if (!global.btoa) {  global.btoa = encode }
+
+if (!global.atob) { global.atob = decode }
+
 // cache app images
 const assetImages = [
   Images.Onboarding,

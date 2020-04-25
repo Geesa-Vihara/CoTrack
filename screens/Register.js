@@ -36,9 +36,9 @@ class Register extends React.Component {
     var res = false
     console.log('state',this.state);
     res = signUp(this.state);
-    if(res){
-      this.props.navigation.navigate('App');
-    }
+    // if(res){
+    //   this.props.navigation.navigate('App');
+    // }
   }
 
   render() {
