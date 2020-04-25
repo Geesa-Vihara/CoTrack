@@ -1,4 +1,4 @@
-import Firebase, {db} from '../config/firebase'
+import Firebase, {db} from '../config/firebase';
 
 export const signUp = async function signUp(data) {
     try {
