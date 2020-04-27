@@ -10,10 +10,14 @@ export const signUp = async function signUp(data) {
                 email: data.email,
                 name: data.name,
                 longitude: 0,
-                latitude: 0,
-                count: 0
+                latitude: 0
+            }
+            const crowdcount = {
+                userId:response.user.uid,
+                count:0
             }
             await db.collection('users').doc(response.user.uid).set(user)
+            await db.collection('crowdcount').doc(response.user.uid).set(crowdcount)
             
             return true
         }
