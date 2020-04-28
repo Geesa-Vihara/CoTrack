@@ -34,7 +34,7 @@ function UpdateUserLocation(data,id) {
             console.log('longitude'+longitude)
             var distance=6371*Math.acos(Math.cos(toRadians(lat))*Math.cos(toRadians(latitude))*Math.cos(toRadians(longitude)-toRadians(lon))+Math.sin(toRadians(lat))*Math.sin(toRadians(latitude)))           
             console.log("dist "+distance)
-            if(distance<=0.005 && id!==uid){
+            if(distance<=5 && id!==uid){
                 count++
             }
         })
