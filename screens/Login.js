@@ -77,9 +77,6 @@ class Login extends React.Component {
 
 _handleNotification = async(notification) => {
   Vibration.vibrate();
-  if(notification.origin==="received" && notification.data['data']==="beaware"){
-    this.beawareSound();
-  }  
   console.log(notification);
   this.setState({ notification: notification });
 };
@@ -87,18 +84,6 @@ _handleNotification = async(notification) => {
 static getExpoPushToken=async()=>{
   var token=await AsyncStorage.getItem("expoPushToken"); 
   return token;
-}
-
-beawareSound = async () => {
-  try {
-    
-      let soundObject  = new Audio.Sound();
-      await soundObject.loadAsync(require('../assets/sounds/beaware.mp3'));
-      await soundObject.playAsync();     
-
-  } catch (error) {
-      //console.log("error"+error);
-  }
 }
 
   render() {
@@ -386,6 +371,15 @@ TaskManager.defineTask('updateLoc', async({ data, error }) => {
           },
           body: JSON.stringify(message),
         }); 
+        try {
+    
+          let soundObject  = new Audio.Sound();
+          await soundObject.loadAsync(require('../assets/sounds/beaware.mp3'));
+          await soundObject.playAsync();     
+    
+      } catch (error) {
+          //console.log("error"+error);
+      }
     }
   })
   

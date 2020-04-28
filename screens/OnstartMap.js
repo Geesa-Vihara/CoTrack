@@ -41,14 +41,7 @@ async componentDidMount() {
 }
 
 _handleNotification = async(notification) => {
-  Vibration.vibrate();
-  if(notification.origin==="received" && notification.data['data']==="hands"){
-    this.handSound();
-  }
-  else if(notification.origin==="received" && notification.data['data']==="mask"){
-    this.maskSound();
-  }
-  
+  Vibration.vibrate();  
   console.log(notification);
   this.setState({ notification: notification });
   if(notification.origin==="selected" && notification.data['data']==="hands"){
@@ -64,31 +57,6 @@ static getExpoPushToken=async()=>{
   var token=await AsyncStorage.getItem("expoPushToken");  
   return token;
 }
-
-handSound = async () => {
-  try {
-    
-      let soundObject  = new Audio.Sound();
-      await soundObject.loadAsync(require('../assets/sounds/handsfemale.mp3'));
-      await soundObject.playAsync();     
-
-  } catch (error) {
-      //console.log("error"+error);
-  }
-}
-
-maskSound = async () => {
-  try {
-    
-      let soundObject  = new Audio.Sound();
-      await soundObject.loadAsync(require('../assets/sounds/maskfemale.mp3'));
-      await soundObject.playAsync();        
-
-  } catch (error) {
-      //console.log("error"+error);
-  }
-}
-
 
 nextpage=async()=>{
   
@@ -250,6 +218,15 @@ TaskManager.defineTask('checkHomeTask', async({ data: { eventType, region }, err
       },
       body: JSON.stringify(message),
     });
+    try {
+    
+      let soundObject  = new Audio.Sound();
+      await soundObject.loadAsync(require('../assets/sounds/handsfemale.mp3'));
+      await soundObject.playAsync();     
+
+  } catch (error) {
+      //console.log("error"+error);
+  }
     
     
   } else if (eventType === Location.GeofencingEventType.Exit) {
@@ -271,5 +248,14 @@ TaskManager.defineTask('checkHomeTask', async({ data: { eventType, region }, err
       },
       body: JSON.stringify(message),
     });
+    try {
+    
+      let soundObject  = new Audio.Sound();
+      await soundObject.loadAsync(require('../assets/sounds/maskfemale.mp3'));
+      await soundObject.playAsync();        
+
+  } catch (error) {
+      //console.log("error"+error);
+  }
   }
 });
