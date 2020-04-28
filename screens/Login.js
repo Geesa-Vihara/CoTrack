@@ -5,13 +5,15 @@ import {
   Dimensions,
   StatusBar,
   TouchableWithoutFeedback,
-  Keyboard
+  Keyboard,
+  AsyncStorage
 } from 'react-native';
 import { Block, Checkbox, Text, Button as GaButton, theme } from 'galio-framework';
-
+import * as TaskManager from 'expo-task-manager';
+import * as Location from 'expo-location';
 import { Button, Icon, Input } from '../components';
 import { Images, nowTheme } from '../constants';
-
+import {db} from '../config/firebase';
 const { width, height } = Dimensions.get('screen');
 
 import Firebase from "../config/firebase"
@@ -36,15 +38,24 @@ class Login extends React.Component {
     console.log('state',this.state);
     login(this.state);
   }
-
   componentDidMount = () => {
     this.setState({emai:'',password:''});
     try {
-      Firebase.auth().onAuthStateChanged(user => {
+      Firebase.auth().onAuthStateChanged(async(user) => {
         if (user) {
+          await AsyncStorage.setItem("uid",String(user.uid) );
+          await Location.startLocationUpdatesAsync('updateLoc', {
+            accuracy: Location.Accuracy.High,
+            timeInterval: 2500,
+            distanceInterval: 5,
+            showsBackgroundLocationIndicator: false,
+            pausesUpdatesAutomatically :true,
+            activityType: Location.ActivityType.Fitness
+        });
           this.props.navigation.navigate('App');
         }
       })
+
     } catch (error) {
       console.log(error)
     }
@@ -299,3 +310,18 @@ const styles = StyleSheet.create({
 });
 
 export default Login;
+TaskManager.defineTask('updateLoc', async({ data, error }) => {
+  if (error) {
+    // check `error.message` for more details.
+    return;
+  }
+  const {locations}=data;
+  const uid=await AsyncStorage.getItem('uid')
+  console.log("uid"+uid)
+  console.log('Received new locations', locations);
+  await db.collection('users').doc(uid).update({
+    "latitude":locations[0].coords.latitude,
+    "longitude":locations[0].coords.longitude
+  })
+  
+});
