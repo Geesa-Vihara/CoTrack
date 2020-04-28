@@ -1,4 +1,5 @@
 import Firebase, {db} from '../config/firebase';
+import { AsyncStorage } from 'react-native';
 
 export const signUp = async function signUp(data) {
     try {
@@ -31,6 +32,8 @@ export const signUp = async function signUp(data) {
 export const login = async function login(credentials) {
     try {
         const response = await Firebase.auth().signInWithEmailAndPassword(credentials.email, credentials.password);
+        await AsyncStorage.setItem("uid",String(response.user.uid) );     
+
     } catch (error) {
         console.log('error', error);
         alert(error)
@@ -40,6 +43,7 @@ export const login = async function login(credentials) {
 export const logout = async function logout() {
     try {
         const response = await Firebase.auth().signOut()
+        await AsyncStorage.removeItem('uid');
         return true
     } catch (error) {
         console.log('error',error);

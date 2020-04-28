@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image } from 'react-native';
+import { Image, AsyncStorage } from 'react-native';
 import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
 import { Asset } from 'expo-asset';
@@ -16,6 +16,9 @@ if (!global.btoa) {  global.btoa = encode }
 
 if (!global.atob) { global.atob = decode }
 
+import { Notifications } from 'expo';
+import * as Permissions from 'expo-permissions';
+import Constants from 'expo-constants';
 // cache app images
 const assetImages = [
   Images.Onboarding,
@@ -45,15 +48,50 @@ function cacheImages(images) {
 }
 
 export default class App extends React.Component {
+
   state = {
     isLoadingComplete: false,
-    fontLoaded: false
+    fontLoaded: false,
+    expoPushToken: '',
+    notification: {}, 
   };
 
+  registerForPushNotificationsAsync = async () => {
+    if (Constants.isDevice) {
+      const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+      let finalStatus = existingStatus;
+      if (existingStatus !== 'granted') {
+        const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+        finalStatus = status;
+      }
+      if (finalStatus !== 'granted') {
+        alert('Failed to get push token for push notification!');
+        return;
+      }
+      token = await Notifications.getExpoPushTokenAsync();
+      console.log(token);
+      this.setState({ expoPushToken: token });
+      await AsyncStorage.setItem("expoPushToken",token);
+    } else {
+      alert('Must use physical device for Push Notifications');
+    }
+  
+    if (Platform.OS === 'android') {
+      Notifications.createChannelAndroidAsync('default', {
+        name: 'default',
+        sound: true,
+        priority: 'max',
+        vibrate: [0, 250, 250, 250],
+      });
+    }
+  };
+  
   async componentDidMount() { 
     await TaskManager.unregisterAllTasksAsync()
     console.log("app"+await TaskManager.getRegisteredTasksAsync())
-    await Font.loadAsync({ 'montserrat-regular': require('./assets/font/Montserrat-Regular.ttf'), 'montserrat-bold': require('./assets/font/Montserrat-Bold.ttf') } ); this.setState({fontLoaded: true, isLoadingComplete: true}); }
+    await Font.loadAsync({ 'montserrat-regular': require('./assets/font/Montserrat-Regular.ttf'), 'montserrat-bold': require('./assets/font/Montserrat-Bold.ttf') } ); this.setState({fontLoaded: true, isLoadingComplete: true}); 
+    this.registerForPushNotificationsAsync();
+  }
 
   render() {
     if (!this.state.isLoadingComplete) {

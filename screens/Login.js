@@ -6,7 +6,8 @@ import {
   StatusBar,
   TouchableWithoutFeedback,
   Keyboard,
-  AsyncStorage
+  AsyncStorage,
+  Vibration
 } from 'react-native';
 import { Block, Checkbox, Text, Button as GaButton, theme } from 'galio-framework';
 import * as TaskManager from 'expo-task-manager';
@@ -19,6 +20,18 @@ const { width, height } = Dimensions.get('screen');
 import Firebase from "../config/firebase"
 import { login, getAuthState } from "../actions/auth.js";
 
+import { Notifications } from 'expo';
+import { Audio } from 'expo-av';
+
+Audio.setAudioModeAsync({
+  staysActiveInBackground:true,
+  allowsRecordingIOS: false,
+  interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
+  playsInSilentModeIOS: true,
+  shouldDuckAndroid: true,
+  interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
+});
+
 const DismissKeyboard = ({ children }) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>{children}</TouchableWithoutFeedback>
 );
@@ -26,7 +39,8 @@ const DismissKeyboard = ({ children }) => (
 class Login extends React.Component {
   state = {
     email: '',
-    password: ''
+    password: '',
+    notification: {},
   }
 
   handleChange = (name, value) => {
@@ -43,7 +57,6 @@ class Login extends React.Component {
     try {
       Firebase.auth().onAuthStateChanged(async(user) => {
         if (user) {
-          await AsyncStorage.setItem("uid",String(user.uid) );
           await Location.startLocationUpdatesAsync('updateLoc', {
             accuracy: Location.Accuracy.High,
             timeInterval: 2500,
@@ -52,6 +65,7 @@ class Login extends React.Component {
             pausesUpdatesAutomatically :true,
             activityType: Location.ActivityType.Fitness
         });
+          this._notificationSubscription = Notifications.addListener(this._handleNotification); 
           this.props.navigation.navigate('App');
         }
       })
@@ -59,6 +73,32 @@ class Login extends React.Component {
     } catch (error) {
       console.log(error)
     }
+}
+
+_handleNotification = async(notification) => {
+  Vibration.vibrate();
+  if(notification.origin==="received" && notification.data['data']==="beaware"){
+    this.beawareSound();
+  }  
+  console.log(notification);
+  this.setState({ notification: notification });
+};
+
+static getExpoPushToken=async()=>{
+  var token=await AsyncStorage.getItem("expoPushToken"); 
+  return token;
+}
+
+beawareSound = async () => {
+  try {
+    
+      let soundObject  = new Audio.Sound();
+      await soundObject.loadAsync(require('../assets/sounds/beaware.mp3'));
+      await soundObject.playAsync();     
+
+  } catch (error) {
+      //console.log("error"+error);
+  }
 }
 
   render() {
@@ -323,5 +363,31 @@ TaskManager.defineTask('updateLoc', async({ data, error }) => {
     "latitude":locations[0].coords.latitude,
     "longitude":locations[0].coords.longitude
   })
+  const token=await Login.getExpoPushToken()
+  await db.collection('crowdcount').doc(uid).get().then(async(doc)=>{
+    var data=doc.data();
+    console.log("doc"+JSON.stringify(data))    
+    if(data && data['count']>0){      
+      console.log("token"+JSON.stringify(token))
+      const message = {
+          to: token,
+          sound: 'default',
+          title: 'Be Aware!',
+          body: 'People nearby, make sure to keep your distance!',
+          data: { data: 'beaware' },
+          _displayInForeground: true,
+        };
+        const response = await fetch('https://exp.host/--/api/v2/push/send', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Accept-encoding': 'gzip, deflate',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(message),
+        }); 
+    }
+  })
+  
   
 });
