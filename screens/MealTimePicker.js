@@ -10,10 +10,11 @@ import {
 import { Block, Checkbox, Text, Button as GaButton, theme } from 'galio-framework';
 
 import TimePicker from 'react-native-simple-time-picker';
+import moment from 'moment';
 
 import { Button, Icon, Input } from '../components';
 import { Images, nowTheme } from '../constants';
-import { signUp } from "../actions/auth.js";
+import { setMealTimes } from "../actions/database.js";
 
 const { width, height } = Dimensions.get('screen');
 
@@ -38,12 +39,15 @@ class MealTimePicker extends React.Component {
   }
 
   handleSubmit = () => {
-    var res = false
-    console.log('state',this.state);
-    res = signUp(this.state);
-    // if(res){
-    //   this.props.navigation.navigate('App');
-    // }
+    const breakfast = this.state.breakfastHour + ':' + this.state.breakfastMinutes;
+    const lunch = this.state.lunchHour + ':' + this.state.lunchMinutes;
+    const dinner = this.state.dinnerHour + ':' + this.state.dinnerMinutes;
+
+    setMealTimes(breakfast,lunch.dinner);
+
+    // const breakfast = moment.utc(b, [moment.ISO_8601, 'HH:mm']);
+    // console.log(breakfast.format('HH:mm'))
+    console.log(breakfast,lunch,dinner);
   }
 
   render() {
@@ -98,8 +102,8 @@ class MealTimePicker extends React.Component {
                             Breakfast Time
                             </Text>
                             <TimePicker
-                              selectedHours={this.state.selectedHours}
-                              selectedMinutes={this.state.selectedMinutes}
+                              selectedHours={this.state.breakfastHour}
+                              selectedMinutes={this.state.breakfastMinutes}
                               onChange={(selectedHours,selectedMinutes) => this.handleChange('breakfastHour','breakfastMinutes',selectedHours,selectedMinutes)}
                             />
                           </Block>
@@ -113,8 +117,8 @@ class MealTimePicker extends React.Component {
                             Lunch Time
                             </Text>
                             <TimePicker
-                              selectedHours={this.state.selectedHours}
-                              selectedMinutes={this.state.selectedMinutes}
+                              selectedHours={this.state.lunchHour}
+                              selectedMinutes={this.state.lunchMinutes}
                               onChange={(selectedHours,selectedMinutes) => this.handleChange('lunchHour','lunchMinutes',selectedHours,selectedMinutes)}
                             />
                           </Block>
@@ -128,8 +132,8 @@ class MealTimePicker extends React.Component {
                             Dinner Time
                             </Text>
                             <TimePicker
-                              selectedHours={this.state.selectedHours}
-                              selectedMinutes={this.state.selectedMinutes}
+                              selectedHours={this.state.dinnerHour}
+                              selectedMinutes={this.state.dinnerMinutes}
                               onChange={(selectedHours,selectedMinutes) => this.handleChange('dinnerHour','dinnerMinutes',selectedHours,selectedMinutes)}
                             />
                           </Block>
@@ -241,7 +245,8 @@ const styles = StyleSheet.create({
     borderWidth: 1, 
     borderColor: 'grey', 
     borderRadius: 10,
-    marginBottom: 10 
+    marginBottom: 10,
+    justifyContent: 'center', 
   }
 });
 
