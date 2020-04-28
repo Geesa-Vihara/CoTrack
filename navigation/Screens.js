@@ -23,6 +23,7 @@ import homeMap from '../screens/homeMap';
 import OnstartMap from '../screens/OnstartMap';
 import handWash from '../screens/handWash';
 import putMask from '../screens/putMask';
+import MealTimePicker from '../screens/MealTimePicker'
 
 const { width } = Dimensions.get("screen");
 
@@ -306,6 +307,8 @@ function AppStack(props) {
 export default function OnboardingStack(props) {
   return (
     <Stack.Navigator mode="card" headerMode="none">
+
+      {/* <Stack.Screen name="MealTimePicker" component={MealTimePicker} /> */}
 
       {/* Auth Navigation */}
       <Stack.Screen name="Login" component={Login} />
