@@ -300,15 +300,14 @@ function AppStack(props) {
       <Drawer.Screen name="Home Map" component={HomeMapStack} />
       <Drawer.Screen name="HandWash" component={handWashStack} />      
       <Drawer.Screen name="PutMask" component={putMaskStack} />
+      <Drawer.Screen name="Meal TimePicker" component={MealTimePicker} /> 
     </Drawer.Navigator>
   );
 }
 
 export default function OnboardingStack(props) {
   return (
-    <Stack.Navigator mode="card" headerMode="none">
-
-      {/* <Stack.Screen name="MealTimePicker" component={MealTimePicker} /> */}
+    <Stack.Navigator mode="card" headerMode="none">      
 
       {/* Auth Navigation */}
       <Stack.Screen name="Login" component={Login} />
