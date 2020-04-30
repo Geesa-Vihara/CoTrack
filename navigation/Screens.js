@@ -308,7 +308,7 @@ export default function OnboardingStack(props) {
   return (
     <Stack.Navigator mode="card" headerMode="none">
 
-      {/* <Stack.Screen name="MealTimePicker" component={MealTimePicker} /> */}
+      <Stack.Screen name="MealTimePicker" component={MealTimePicker} />
 
       {/* Auth Navigation */}
       <Stack.Screen name="Login" component={Login} />
