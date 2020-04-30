@@ -27,10 +27,11 @@ function CustomDrawerContent({
   const insets = useSafeArea();
   const screens = [
     "Home",
-    "Components",
+    //"Components",
+    "Meal TimePicker",
     //"Articles",
-    "Profile",
-    "Account",
+    //"Profile",
+    //"Account",
     "Home Map"
   ];
   return (
@@ -65,14 +66,14 @@ function CustomDrawerContent({
           <Block
             style={{ borderColor: 'white', width: '93%', borderWidth: StyleSheet.hairlineWidth, marginHorizontal: 10}}
           />
-          <Text
+          {/* <Text
             color={nowTheme.COLORS.WHITE}
             style={{ marginTop: 30, marginLeft: 20, marginBottom: 10, fontFamily: 'montserrat-regular', fontWeight: '300', fontSize: 12}}
           >
             DOCUMENTATION
-          </Text>
+          </Text> */}
         </Block>
-        <DrawerCustomItem title="GETTING STARTED" navigation={navigation}/>
+        {/*<DrawerCustomItem title="GETTING STARTED" navigation={navigation}/>*/}
         <DrawerCustomItem title="LOGOUT" navigation={navigation}/>
         </ScrollView>
       </Block>

@@ -5,7 +5,9 @@ import {
   Dimensions,
   StatusBar,
   TouchableWithoutFeedback,
-  Keyboard
+  Keyboard,
+  Vibration,
+  Alert 
 } from 'react-native';
 import { Block, Checkbox, Text, Button as GaButton, theme } from 'galio-framework';
 
@@ -15,6 +17,8 @@ import moment from 'moment';
 import { Button, Icon, Input } from '../components';
 import { Images, nowTheme } from '../constants';
 import { setMealTimes } from "../actions/database.js";
+import { Notifications } from 'expo';
+import { Audio } from 'expo-av';
 
 const { width, height } = Dimensions.get('screen');
 
@@ -31,27 +35,126 @@ class MealTimePicker extends React.Component {
     lunchMinutes: 0,
     dinnerHour: 0,
     dinnerMinutes: 0,
+    notification:{}
   }
+
+  successAlert = () =>
+  Alert.alert(
+    "Pick Your Meal Times",
+    "Your meal times submitted successfully!",
+    [
+      { text: "OK", onPress: () => console.log("OK Pressed") }
+    ],
+    { cancelable: false }
+  );
 
   handleChange = (hours, minutes, h, m) => {
     this.setState({ [hours]: h, [minutes]: m });
     console.log(this.state)
   }
+  componentDidMount() {
+    this._notificationSubscription = Notifications.addListener(this._handleNotification); 
+  }
+  
+  _handleNotification = async(notification) => {
+    Vibration.vibrate();  
+    console.log(notification);
+    this.setState({ notification: notification });
+    
+    if(notification.origin==="received" && notification.data['data']==="breakfast"){
+      try {
+    
+        let soundObject  = new Audio.Sound();
+        await soundObject.loadAsync(require('../assets/sounds/breakfast.mp3'));
+        await soundObject.playAsync();        
+  
+    } catch (error) {
+        //console.log("error"+error);
+    }
+
+  }else if(notification.origin==="received" && notification.data['data']==="lunch"){
+    try {
+    
+      let soundObject  = new Audio.Sound();
+      await soundObject.loadAsync(require('../assets/sounds/lunch.mp3'));
+      await soundObject.playAsync();        
+
+  } catch (error) {
+      //console.log("error"+error);
+  }
+
+  }else if(notification.origin==="received" && notification.data['data']==="dinner"){
+    try {
+    
+      let soundObject  = new Audio.Sound();
+      await soundObject.loadAsync(require('../assets/sounds/dinner.mp3'));
+      await soundObject.playAsync();        
+
+  } catch (error) {
+      //console.log("error"+error);
+  }
+  }
+
+  if(notification.origin==="selected"){
+      const {navigation}= this.props;
+      navigation.navigate('HandWash');
+  };
+}
 
   handleSubmit = () => {
+    this.successAlert();
     // const breakfast = this.state.breakfastHour + ':' + this.state.breakfastMinutes;
     // const lunch = this.state.lunchHour + ':' + this.state.lunchMinutes;
     // const dinner = this.state.dinnerHour + ':' + this.state.dinnerMinutes;
 
-    const breakfast = moment({hour:this.state.breakfastHour, minute:this.state.breakfastMinutes}).toISOString();
-    const lunch = moment({hour:this.state.lunchHour, minute:this.state.lunchMinutes}).toISOString();
-    const dinner = moment({hour:this.state.dinnerHour, minute:this.state.dinnerMinutes}).toISOString();
+    var breakfast = moment({hour:this.state.breakfastHour, minute:this.state.breakfastMinutes}).toISOString();
+    var lunch = moment({hour:this.state.lunchHour, minute:this.state.lunchMinutes}).toISOString();
+    var dinner = moment({hour:this.state.dinnerHour, minute:this.state.dinnerMinutes}).toISOString();
 
     setMealTimes(breakfast,lunch,dinner);
-
+    if(new Date()>new Date(breakfast)){
+      breakfast=moment(breakfast).add(1, 'days').toISOString();
+    }
+    if(new Date()>new Date(lunch)){
+      lunch=moment(lunch).add(1, 'days').toISOString();
+    }
+    if(new Date()>new Date(dinner)){
+      dinner=moment(dinner).add(1, 'days').toISOString();
+    } 
     //const breakfast = moment.utc(b, [moment.ISO_8601, 'HH:mm']);
     //console.log(moment({hour:this.state.breakfastHour, minute:this.state.breakfastMinutes}))
     console.log(breakfast,lunch,dinner);
+    console.log((new Date(breakfast)).getTime(),(new Date(lunch)).getTime(),(new Date(dinner)).getTime());
+    const localNotificationb={
+      title:"It's breakfast time!",
+      body:"Make sure to wash your hands before you eat your breakfast!",
+      data: { data: 'breakfast' },
+    };
+    const schedulingOptionsb={
+      time:(new Date(breakfast)).getTime(),
+      repeat:'day'
+    };
+    const localNotificationl={
+      title:"It's lunch time!",
+      body:"Make sure to wash your hands before you eat your lunch!",
+      data: { data: 'lunch' },
+    };
+    const schedulingOptionsl={
+      time:(new Date(lunch)).getTime(),
+      repeat:'day'
+    };
+    const localNotificationd={
+      title:"It's dinner time!",
+      body:"Make sure to wash your hands before you eat your dinner!",
+      data: { data: 'dinner' },
+    };
+    const schedulingOptionsd={
+      time:(new Date(dinner)).getTime(),
+      repeat:'day'
+    };
+    Notifications.scheduleLocalNotificationAsync(localNotificationb, schedulingOptionsb);
+    Notifications.scheduleLocalNotificationAsync(localNotificationl, schedulingOptionsl);
+    Notifications.scheduleLocalNotificationAsync(localNotificationd, schedulingOptionsd);
   }
 
   render() {

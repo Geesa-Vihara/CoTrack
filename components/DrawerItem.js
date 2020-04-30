@@ -111,6 +111,16 @@ class DrawerItem extends React.Component {
               color={focused ? nowTheme.COLORS.PRIMARY : "white"}
             />
           );
+        case "Meal TimePicker":
+          return (
+            <Icon
+              name="spaceship2x"
+              family="NowExtra"
+              size={18}
+              style={{ borderColor: "rgba(0,0,0,0.5)", opacity: 0.5 }}
+              color={focused ? nowTheme.COLORS.PRIMARY : "white"}
+            />
+          );
       case "LOGOUT":
         return (
           <Icon
