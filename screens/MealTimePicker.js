@@ -39,14 +39,18 @@ class MealTimePicker extends React.Component {
   }
 
   handleSubmit = () => {
-    const breakfast = this.state.breakfastHour + ':' + this.state.breakfastMinutes;
-    const lunch = this.state.lunchHour + ':' + this.state.lunchMinutes;
-    const dinner = this.state.dinnerHour + ':' + this.state.dinnerMinutes;
+    // const breakfast = this.state.breakfastHour + ':' + this.state.breakfastMinutes;
+    // const lunch = this.state.lunchHour + ':' + this.state.lunchMinutes;
+    // const dinner = this.state.dinnerHour + ':' + this.state.dinnerMinutes;
 
-    setMealTimes(breakfast,lunch.dinner);
+    const breakfast = moment({hour:this.state.breakfastHour, minute:this.state.breakfastMinutes}).toISOString();
+    const lunch = moment({hour:this.state.lunchHour, minute:this.state.lunchMinutes}).toISOString();
+    const dinner = moment({hour:this.state.dinnerHour, minute:this.state.dinnerMinutes}).toISOString();
 
-    // const breakfast = moment.utc(b, [moment.ISO_8601, 'HH:mm']);
-    // console.log(breakfast.format('HH:mm'))
+    setMealTimes(breakfast,lunch,dinner);
+
+    //const breakfast = moment.utc(b, [moment.ISO_8601, 'HH:mm']);
+    //console.log(moment({hour:this.state.breakfastHour, minute:this.state.breakfastMinutes}))
     console.log(breakfast,lunch,dinner);
   }
 

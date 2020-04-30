@@ -10,10 +10,10 @@ export const setMealTimes = async function setMealTimes(breakfast,lunch,dinner){
             dinner : dinner,
         }
 
-        await db.collection('users').doc(user.uid).update(mealTimes);
+        await db.collection('mealTimes').doc(user.uid).set(mealTimes);
     }
     catch(e){
-        console.log('error', error);
-        alert(error)
+        console.log('error', e);
+        alert(e)
     }
 }
