@@ -16,7 +16,7 @@ import moment from 'moment';
 
 import { Button, Icon, Input } from '../components';
 import { Images, nowTheme } from '../constants';
-import { setMealTimes } from "../actions/database.js";
+import { setMealTimes, getMealTimes } from "../actions/database.js";
 import { Notifications } from 'expo';
 import { Audio } from 'expo-av';
 
@@ -29,8 +29,8 @@ const DismissKeyboard = ({ children }) => (
 class MealTimePicker extends React.Component {
   
   state = {
-    breakfastHour: 0,
-    breakfastMinutes: 0,
+    //breakfastHour: 0,
+    //breakfastMinutes: 0,
     lunchHour: 0,
     lunchMinutes: 0,
     dinnerHour: 0,
@@ -52,8 +52,30 @@ class MealTimePicker extends React.Component {
     this.setState({ [hours]: h, [minutes]: m });
     console.log(this.state)
   }
-  componentDidMount() {
-    this._notificationSubscription = Notifications.addListener(this._handleNotification); 
+  async componentDidMount() {
+    try {
+      const mealTimes = await getMealTimes();
+
+      const breakfast = moment(mealTimes.breakfast)
+      const lunch = moment(mealTimes.lunch)
+      const dinner = moment(mealTimes.dinner)
+
+      this.setState({
+        breakfastHour : breakfast.hour(),
+        breakfastMinutes : breakfast.minute(),
+        lunchHour : lunch.hour(),
+        lunchMinutes : lunch.minute(),
+        dinnerHour : dinner.hour(),
+        dinnerMinutes : dinner.minute()
+      })
+
+      console.log(this.state); 
+
+    } catch (error) {
+      console.log(error)
+    }
+
+    this._notificationSubscription = Notifications.addListener(this._handleNotification);
   }
   
   _handleNotification = async(notification) => {
@@ -158,6 +180,7 @@ class MealTimePicker extends React.Component {
   }
 
   render() {
+    console.log(this.state)
     return (
       <DismissKeyboard>
         <Block flex middle>
