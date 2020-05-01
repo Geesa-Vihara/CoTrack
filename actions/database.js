@@ -17,3 +17,18 @@ export const setMealTimes = async function setMealTimes(breakfast,lunch,dinner){
         alert(e)
     }
 }
+
+export const getMealTimes = async function getMealTimes(){
+    try {
+        const user = await Firebase.auth().currentUser;
+
+        const mealTimes = await (await db.collection('mealTimes').doc(user.uid).get()).data();
+
+        console.log(mealTimes);
+
+        return mealTimes;
+    } 
+    catch (error) {
+        alert(error)
+    }
+}
