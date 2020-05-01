@@ -60,7 +60,7 @@ componentDidMount(){
     longitude:longitude
 }
   const radius = 50;
-  await TaskManager.unregisterAllTasksAsync()
+  await TaskManager.unregisterTaskAsync('checkHomeTask')
   await Location.startGeofencingAsync('checkHomeTask', [
       {
         ...latLng,

@@ -19,6 +19,8 @@ if (!global.atob) { global.atob = decode }
 import { Notifications } from 'expo';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
+import * as Location from 'expo-location';
+
 // cache app images
 const assetImages = [
   Images.Onboarding,
@@ -85,12 +87,29 @@ export default class App extends React.Component {
       });
     }
   };
+
+  async getLocationAsync (){
+    let { status } = await Location.requestPermissionsAsync();
+    if (status !== 'granted') {
+      this.setState({
+        locationResult: 'Permission to access location was denied',
+      });
+    } else {
+      this.setState({ hasLocationPermissions: true });
+    }
   
-  async componentDidMount() { 
-    await TaskManager.unregisterAllTasksAsync()
-    console.log("app"+await TaskManager.getRegisteredTasksAsync())
+    let location = await Location.getCurrentPositionAsync({});
+    const longitude=location.coords.longitude;   
+    const latitude= location.coords.latitude;  
+    await AsyncStorage.setItem("longitude",String(longitude) );
+    await AsyncStorage.setItem("latitude",String(latitude));
+   }
+  
+  async componentDidMount() {     
+    console.log("app")
     await Font.loadAsync({ 'montserrat-regular': require('./assets/font/Montserrat-Regular.ttf'), 'montserrat-bold': require('./assets/font/Montserrat-Bold.ttf') } ); this.setState({fontLoaded: true, isLoadingComplete: true}); 
     this.registerForPushNotificationsAsync();
+    this.getLocationAsync();  
   }
 
   render() {

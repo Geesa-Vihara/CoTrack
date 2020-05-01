@@ -56,7 +56,9 @@ class Login extends React.Component {
     this.setState({emai:'',password:''});
     try {
       Firebase.auth().onAuthStateChanged(async(user) => {
+
         if (user) {
+          await TaskManager.unregisterAllTasksAsync()
           await Location.startLocationUpdatesAsync('updateLoc', {
             accuracy: Location.Accuracy.High,
             timeInterval: 2500,
@@ -65,8 +67,21 @@ class Login extends React.Component {
             pausesUpdatesAutomatically :true,
             activityType: Location.ActivityType.Fitness
         });
-          this._notificationSubscription = Notifications.addListener(this._handleNotification); 
-          this.props.navigation.navigate('App');
+        const longitude= Number(await AsyncStorage.getItem("longitude"));
+        const latitude=Number(await AsyncStorage.getItem("latitude"));
+        const latLng={
+            latitude:latitude,
+            longitude:longitude
+        }
+        const radius = 50;
+        await Location.startGeofencingAsync('checkHomeTask', [
+            {
+              ...latLng,
+              radius
+            }
+          ]);
+        this._notificationSubscription = Notifications.addListener(this._handleNotification); 
+        this.props.navigation.navigate('App');
         }
       })
 
@@ -79,6 +94,13 @@ _handleNotification = async(notification) => {
   Vibration.vibrate();
   console.log(notification);
   this.setState({ notification: notification });
+  if(notification.origin==="selected" && notification.data['data']==="hands"){
+    const {navigation}= this.props;
+    navigation.navigate('HandWash');
+  }else if(notification.origin==="selected" && notification.data['data']==="mask"){
+    const {navigation}= this.props;
+    navigation.navigate('PutMask');
+  }
 };
 
 static getExpoPushToken=async()=>{
@@ -384,4 +406,74 @@ TaskManager.defineTask('updateLoc', async({ data, error }) => {
   })
   
   
+});
+
+TaskManager.defineTask('checkHomeTask', async({ data: { eventType, region }, error }) => {
+  if (error) {
+    // check `error.message` for more details.
+    return;
+  }
+  console.log(eventType);
+  
+  const token=await Login.getExpoPushToken()
+  console.log("token"+JSON.stringify(token))
+  if (eventType === Location.GeofencingEventType.Enter) {    
+    console.log("You've entered region:", region);
+    const message = {
+      to: token,
+      sound: 'default',
+      title: 'Wecome Home!',
+      body: 'Remember to wash your hands before you see your loved ones!',
+      data: { data: 'hands' },
+      _displayInForeground: true,
+    };
+    const response = await fetch('https://exp.host/--/api/v2/push/send', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-encoding': 'gzip, deflate',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(message),
+    });
+    try {
+    
+      let soundObject  = new Audio.Sound();
+      await soundObject.loadAsync(require('../assets/sounds/handsfemale.mp3'));
+      await soundObject.playAsync();     
+
+  } catch (error) {
+      //console.log("error"+error);
+  }
+    
+    
+  } else if (eventType === Location.GeofencingEventType.Exit) {
+    console.log("You've left region:", region);
+    const message = {
+      to: token,
+      sound: 'default',
+      title: 'Going Outside?',
+      body: 'Remember to wear a mask!',
+      data: { data: 'mask' },
+      _displayInForeground: true,
+    };
+    const response = await fetch('https://exp.host/--/api/v2/push/send', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-encoding': 'gzip, deflate',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(message),
+    });
+    try {
+    
+      let soundObject  = new Audio.Sound();
+      await soundObject.loadAsync(require('../assets/sounds/maskfemale.mp3'));
+      await soundObject.playAsync();        
+
+  } catch (error) {
+      //console.log("error"+error);
+  }
+  }
 });

@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0
   },
 });
-TaskManager.defineTask('checkHomeTask', async({ data: { eventType, region }, error }) => {
+/* TaskManager.defineTask('checkHomeTask', async({ data: { eventType, region }, error }) => {
   if (error) {
     // check `error.message` for more details.
     return;
@@ -258,4 +258,4 @@ TaskManager.defineTask('checkHomeTask', async({ data: { eventType, region }, err
       //console.log("error"+error);
   }
   }
-});
+}); */

@@ -232,6 +232,46 @@ function HomeMapStack(props) {
     </Stack.Navigator>
   );
 }
+
+function MealTimeStack(props) {
+  return (
+    <Stack.Navigator mode="card" headerMode="screen">
+      <Stack.Screen
+        name="MealTime"
+        component={MealTimePicker}
+        options={{
+          header: ({ navigation, scene }) => (
+            <Header
+              title="Meal Timepicker"
+              transparent
+              navigation={navigation}
+              scene={scene}
+            />
+          ),
+          cardStyle: { backgroundColor: "#FFFFFF" }
+        }}
+      />
+      <Stack.Screen
+        name="Pro"
+        component={Pro}
+        options={{
+          header: ({ navigation, scene }) => (
+            <Header
+              title=""
+              back
+              white
+              transparent
+              navigation={navigation}
+              scene={scene}
+            />
+          ),
+          headerTransparent: true
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
+
 function OnstartMapStack(props) {
   return (
     <Stack.Navigator>
@@ -300,7 +340,7 @@ function AppStack(props) {
       <Drawer.Screen name="Home Map" component={HomeMapStack} />
       <Drawer.Screen name="HandWash" component={handWashStack} />      
       <Drawer.Screen name="PutMask" component={putMaskStack} />
-      <Drawer.Screen name="Meal TimePicker" component={MealTimePicker} /> 
+      <Drawer.Screen name="Meal TimePicker" component={MealTimeStack} /> 
     </Drawer.Navigator>
   );
 }
@@ -322,7 +362,7 @@ export default function OnboardingStack(props) {
         }}
       /> */}
 
-      <Stack.Screen name="OnstartMap" component={OnstartMapStack} />
+      {/* <Stack.Screen name="OnstartMap" component={OnstartMapStack} /> */}
       <Stack.Screen name="App" component={AppStack} />
     </Stack.Navigator>
   );
