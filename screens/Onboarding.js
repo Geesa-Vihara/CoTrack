@@ -1,4 +1,4 @@
-import React from 'react';
+/* import React from 'react';
 import { ImageBackground, Image, StyleSheet, StatusBar, Dimensions, Platform} from 'react-native';
 import { Block, Button, Text, theme } from 'galio-framework';
 const { height, width } = Dimensions.get('screen');
@@ -141,3 +141,4 @@ const styles = StyleSheet.create({
     height: 66
   }
 });
+ */

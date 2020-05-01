@@ -67,8 +67,11 @@ class Login extends React.Component {
             pausesUpdatesAutomatically :true,
             activityType: Location.ActivityType.Fitness
         });
-        const longitude= Number(await AsyncStorage.getItem("longitude"));
-        const latitude=Number(await AsyncStorage.getItem("latitude"));
+        const uid=await AsyncStorage.getItem('uid');
+        const doc=await db.collection('crowdcount').doc(uid).get();
+        const data=await doc.data();
+        const longitude= data.homeLon;
+        const latitude=data.homeLat;
         const latLng={
             latitude:latitude,
             longitude:longitude
@@ -365,7 +368,7 @@ TaskManager.defineTask('updateLoc', async({ data, error }) => {
   const {locations}=data;
   const uid=await AsyncStorage.getItem('uid')
   console.log("uid"+uid)
-  console.log('Received new locations', locations);
+  console.log('Received new locations', locations[0]);
   await db.collection('users').doc(uid).update({
     "latitude":locations[0].coords.latitude,
     "longitude":locations[0].coords.longitude

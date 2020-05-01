@@ -97,12 +97,6 @@ export default class App extends React.Component {
     } else {
       this.setState({ hasLocationPermissions: true });
     }
-  
-    let location = await Location.getCurrentPositionAsync({});
-    const longitude=location.coords.longitude;   
-    const latitude= location.coords.latitude;  
-    await AsyncStorage.setItem("longitude",String(longitude) );
-    await AsyncStorage.setItem("latitude",String(latitude));
    }
   
   async componentDidMount() {     

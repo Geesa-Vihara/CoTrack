@@ -1,4 +1,4 @@
-import React from "react";
+/* import React from "react";
 import { StyleSheet, Dimensions,View, AsyncStorage,Vibration } from "react-native";
 import MapView,{Marker} from "react-native-maps";
 import * as Location from 'expo-location';
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
     shadowRadius: 0,
     shadowOpacity: 0
   },
-});
+}); */
 /* TaskManager.defineTask('checkHomeTask', async({ data: { eventType, region }, error }) => {
   if (error) {
     // check `error.message` for more details.

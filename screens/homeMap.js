@@ -3,6 +3,7 @@ import { StyleSheet, Dimensions,View,Text, AsyncStorage } from "react-native";
 import MapView,{Marker} from "react-native-maps";
 import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
+import {db} from '../config/firebase';
 
 export default class homeMap extends React.Component {
 state={
@@ -16,23 +17,24 @@ state={
   locationResult: null
 }
 
-componentDidMount(){
-  AsyncStorage.getItem('longitude', (err, result) => {
-    this.setState(prevState => ({
-      coords: {                   
-          ...prevState.coords,    
-          longitude: Number(result)  
-      }
-  }))
-  });
-  AsyncStorage.getItem('latitude', (err, result) => {
-    this.setState(prevState => ({
-      coords: {                   
-          ...prevState.coords,    
-          latitude: Number(result)  
-      }
-  }))
-  });
+async componentDidMount(){
+  const uid=await AsyncStorage.getItem('uid');
+  const doc=await db.collection('crowdcount').doc(uid).get();
+  const data=await doc.data();
+  this.setState(prevState => ({
+    coords: {                   
+        ...prevState.coords,    
+        longitude: data.homeLon 
+    }
+  }));
+
+  this.setState(prevState => ({
+    coords: {                   
+        ...prevState.coords,    
+        latitude: data.homeLat  
+    }
+  }));
+  
   
 }
 
@@ -53,8 +55,6 @@ componentDidMount(){
         latitude: latitude     
     }
   }))
-  await AsyncStorage.setItem("longitude",String(longitude) );
-  await AsyncStorage.setItem("latitude",String(latitude));
   const latLng={
     latitude:latitude,
     longitude:longitude
@@ -67,6 +67,9 @@ componentDidMount(){
         radius
       }
     ]);
+    const uid=await AsyncStorage.getItem('uid');
+    console.log(longitude,latitude)
+    await db.collection('crowdcount').doc(uid).update({homeLon:longitude,homeLat:latitude});
  }
   render() {
     return (
