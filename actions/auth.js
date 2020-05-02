@@ -1,6 +1,7 @@
 import Firebase, {db} from '../config/firebase';
 import { AsyncStorage } from 'react-native';
 import * as Location from 'expo-location';
+import * as TaskManager from 'expo-task-manager';
 
 export const signUp = async function signUp(data) {
     try {
@@ -51,6 +52,7 @@ export const logout = async function logout() {
     try {
         const response = await Firebase.auth().signOut()
         await AsyncStorage.removeItem('uid');
+        await TaskManager.unregisterAllTasksAsync()
         return true
     } catch (error) {
         console.log('error',error);
