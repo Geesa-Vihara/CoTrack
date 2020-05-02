@@ -98,12 +98,33 @@ export default class App extends React.Component {
       this.setState({ hasLocationPermissions: true });
     }
    }
+   async newsFetch(){
+
+   
+    fetch(
+      `https://hpb.health.gov.lk/api/get-current-statistical`
+    )
+    .then(res => res.json())
+    .then(data => {
+    
+      this.setState({
+        temperature: data.local_total_cases,
+        weatherCondition: data.global_total_cases,
+        isLoading: false,
+        
+        });
+        console.log(temperature);
+
+    });
+    
+   }
   
   async componentDidMount() {     
     console.log("app")
     await Font.loadAsync({ 'montserrat-regular': require('./assets/font/Montserrat-Regular.ttf'), 'montserrat-bold': require('./assets/font/Montserrat-Bold.ttf') } ); this.setState({fontLoaded: true, isLoadingComplete: true}); 
     this.registerForPushNotificationsAsync();
     this.getLocationAsync();  
+    // this.newsFetch();
   }
 
   render() {
