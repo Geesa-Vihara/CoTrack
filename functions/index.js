@@ -6,6 +6,7 @@ exports.onUpdateUserLocation = functions.firestore.document('users/{userId}').on
     const uid=context.params.userId
     const afterData = snapshot.after.data()
     UpdateUserLocation(afterData,uid);
+    countUpdate();
     return null;
 });
 
@@ -44,4 +45,7 @@ function UpdateUserLocation(data,id) {
         }
            
     ).catch(err=>console.log("err"+err))
+}
+function countUpdate(){
+    console.log("test count");
 }
