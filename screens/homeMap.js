@@ -4,6 +4,7 @@ import MapView,{Marker} from "react-native-maps";
 import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
 import {db} from '../config/firebase';
+import { logout } from "../actions/auth.js";
 
 export default class homeMap extends React.Component {
 state={
@@ -55,7 +56,7 @@ async componentDidMount(){
         latitude: latitude     
     }
   }))
-  const latLng={
+  /* const latLng={
     latitude:latitude,
     longitude:longitude
 }
@@ -66,10 +67,16 @@ async componentDidMount(){
         ...latLng,
         radius
       }
-    ]);
+    ]); */
     const uid=await AsyncStorage.getItem('uid');
     console.log(longitude,latitude)
     await db.collection('crowdcount').doc(uid).update({homeLon:longitude,homeLat:latitude});
+    var res = false;
+    res = logout();
+
+    if(res){
+      this.props.navigation.navigate('Login');
+    }
  }
   render() {
     return (
