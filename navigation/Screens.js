@@ -288,8 +288,9 @@ function OnstartMapStack(props) {
 
 function RegisterStack(props) {
   return (
-    <Stack.Navigator>
-      <Stack.Screen name="Register" component={Register} options={{
+    <Stack.Navigator mode="card" headerMode="none">
+
+     <Stack.Screen name="Register" component={Register} options={{
         navigationOptions:({ navigation, scene }) => ({ 
           header: <Header title="Select your home location on the map..." navigation={navigation} scene={scene} />
          }),

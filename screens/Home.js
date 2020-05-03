@@ -36,7 +36,7 @@ class Home extends React.Component {
             />
             <Card item={articles[5]} />
           </Block>
-        
+       
         </Block>
       </ScrollView>
     );
