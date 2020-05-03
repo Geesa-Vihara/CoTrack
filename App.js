@@ -4,7 +4,7 @@ import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
 import { Asset } from 'expo-asset';
 import { Block, GalioProvider } from 'galio-framework';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DarkTheme } from '@react-navigation/native';
 import * as TaskManager from 'expo-task-manager';
 
 import Screens from './navigation/Screens';
@@ -56,6 +56,11 @@ export default class App extends React.Component {
     fontLoaded: false,
     expoPushToken: '',
     notification: {}, 
+    local_total_cases:0,
+    global_total_cases:0,
+    local_new_cases:0,
+    local_deaths:0,
+    local_recovered:0,
   };
 
   registerForPushNotificationsAsync = async () => {
@@ -106,16 +111,28 @@ export default class App extends React.Component {
     )
     .then(res => res.json())
     .then(data => {
-    
+
+    console.log("local total cases = "+JSON.stringify(data.data.local_total_cases));
+    console.log("global total cases = "+data.data.global_total_cases);
+    console.log("local deaths = "+data.data.local_deaths);
+    console.log("local new cases = "+data.data.local_new_cases);
+    console.log("local recovered cases = "+data.data.local_recovered);
+
       this.setState({
-        temperature: data.local_total_cases,
-        weatherCondition: data.global_total_cases,
+        local_total_cases: data.data.local_total_cases,
+        global_total_cases: data.data.global_total_cases,
+        local_deaths : data.data.local_deaths,
+        local_new_cases : data.data.local_new_cases,
+        local_recovered : data.data.local_recovered,
         isLoading: false,
         
         });
-        console.log(temperature);
+     
+       
 
     });
+    console.log("blaaaa "+this.state.local_total_cases);
+    console.log("haaaa "+this.state.local_deaths);
     
    }
   
@@ -124,7 +141,7 @@ export default class App extends React.Component {
     await Font.loadAsync({ 'montserrat-regular': require('./assets/font/Montserrat-Regular.ttf'), 'montserrat-bold': require('./assets/font/Montserrat-Bold.ttf') } ); this.setState({fontLoaded: true, isLoadingComplete: true}); 
     this.registerForPushNotificationsAsync();
     this.getLocationAsync();  
-    // this.newsFetch();
+    this.newsFetch();
   }
 
   render() {
