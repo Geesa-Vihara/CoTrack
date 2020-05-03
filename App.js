@@ -114,6 +114,7 @@ export default class App extends React.Component {
      console.log("local new cases = "+JSON.stringify(data.data.local_new_cases));
      console.log("local deaths = "+JSON.stringify(data.data.local_deaths));
      console.log("global total cases = "+JSON.stringify(data.data.global_total_cases));
+     console.log("taaaaaa");
     
       this.setState({
         local_total: data.local_total_cases,
