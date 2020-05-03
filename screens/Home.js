@@ -30,14 +30,13 @@ class Home extends React.Component {
             <Card item={articles[3]} />
           </Block>
           <Block flex row>
-            {/* <Card
+            <Card
               item={articles[4]}
               style={{ marginRight: theme.SIZES.BASE }}
             />
-            <Card item={articles[5]} /> */}
+            <Card item={articles[5]} />
           </Block>
-          {/* <Card item={articles[3]} horizontal />
-          <Card item={articles[4]} full /> */}
+        
         </Block>
       </ScrollView>
     );

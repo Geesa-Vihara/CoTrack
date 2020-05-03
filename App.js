@@ -56,6 +56,10 @@ export default class App extends React.Component {
     fontLoaded: false,
     expoPushToken: '',
     notification: {}, 
+    local_total:0,
+    global_total:0,
+    local_new:0,
+    local_deaths:0,
   };
 
   registerForPushNotificationsAsync = async () => {
@@ -98,12 +102,40 @@ export default class App extends React.Component {
       this.setState({ hasLocationPermissions: true });
     }
    }
+   async newsFetch(){
+
+   
+    fetch(
+      `https://hpb.health.gov.lk/api/get-current-statistical`
+    )
+    .then(res => res.json())
+    .then(data => {
+     console.log("local total cases = "+JSON.stringify(data.data.local_total_cases));
+     console.log("local new cases = "+JSON.stringify(data.data.local_new_cases));
+     console.log("local deaths = "+JSON.stringify(data.data.local_deaths));
+     console.log("global total cases = "+JSON.stringify(data.data.global_total_cases));
+    
+      this.setState({
+        local_total: data.local_total_cases,
+        global_total: data.global_total_cases,
+        local_deaths :data.local_deaths,
+        local_new : data.local_new_cases,
+        isLoading: false,
+        
+        });
+       
+        console.log("local cases"+local_total);
+        console.log("blaaaaa");
+    });
+    
+   }
   
   async componentDidMount() {     
     console.log("app")
     await Font.loadAsync({ 'montserrat-regular': require('./assets/font/Montserrat-Regular.ttf'), 'montserrat-bold': require('./assets/font/Montserrat-Bold.ttf') } ); this.setState({fontLoaded: true, isLoadingComplete: true}); 
     this.registerForPushNotificationsAsync();
     this.getLocationAsync();  
+    this.newsFetch();
   }
 
   render() {
