@@ -269,7 +269,7 @@ class MealTimePicker extends React.Component {
                           </Block>
                         </Block>
                         <Block center>
-                          <Button color="info" round style={styles.createButton} onPress={this.handleSubmit}>
+                          <Button round style={styles.createButton} onPress={this.handleSubmit}>
                             <Text
                               style={{ fontFamily: 'montserrat-bold' }}
                               size={14}
@@ -358,6 +358,7 @@ const styles = StyleSheet.create({
     paddingBottom: 15
   },
   createButton: {
+    color:nowTheme.COLORS.PRIMARY,
     width: width * 0.5,
     marginTop: 25,
     marginBottom: 40

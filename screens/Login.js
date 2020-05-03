@@ -248,7 +248,7 @@ static getExpoPushToken=async()=>{
                           </Block> */}
                         </Block>
                         <Block center>
-                          <Button color="info" round style={styles.createButton} onPress={this.handleSubmit}>
+                          <Button round style={styles.createButton} onPress={this.handleSubmit}>
                             <Text
                               style={{ fontFamily: 'montserrat-bold' }}
                               size={14}
@@ -258,7 +258,7 @@ static getExpoPushToken=async()=>{
                             </Text>
                           </Button>
                           <Button color="transparent" shadowless style={styles.link} onPress={() => navigation.push('Register')}>
-                            <Text center color={theme.COLORS.ERROR} size={theme.SIZES.FONT * 0.75}>
+                            <Text center color={nowTheme.COLORS.PRIMARY} size={theme.SIZES.FONT * 0.75}>
                             {"Don't have an account? Sign Up"}
                             </Text>
                         </Button>
@@ -344,7 +344,8 @@ const styles = StyleSheet.create({
   createButton: {
     width: width * 0.5,
     marginTop: 25,
-    marginBottom: 40
+    marginBottom: 40,
+    color:nowTheme.COLORS.PRIMARY
   },
   link: {
     width: width * 0.5,
