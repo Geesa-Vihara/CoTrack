@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "BSafe",
-    "slug": "now-ui-react-native",
+    "slug": "BSafe",
     "privacy": "public",
     "sdkVersion": "36.0.0",
     "platforms": ["ios", "android"],
@@ -9,7 +9,7 @@
     "orientation": "portrait",
     "icon": "./assets/bsafe.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/load.png",
       "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
@@ -18,7 +18,22 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "UIBackgroundModes": [
+          "location",
+          "fetch"
+        ]
+      }      
+    },
+    "android": {
+      "package": "com.Ampersand.BSafe",
+      "versionCode": 1,
+      "config": {
+        "googleMaps": {
+          "apiKey": "API_KEY"
+        }     
+      }  
     },
     "packagerOpts": {
       "assetExts": ["ttf"]

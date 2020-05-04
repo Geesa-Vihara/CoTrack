@@ -63,16 +63,16 @@ export default class App extends React.Component {
     local_recovered:0,
   };
 
-  registerForPushNotificationsAsync = async () => {
+  notificationAndMicrophone = async () => {
     if (Constants.isDevice) {
-      const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+      const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS,Permissions.AUDIO_RECORDING);
       let finalStatus = existingStatus;
       if (existingStatus !== 'granted') {
-        const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+        const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS,Permissions.AUDIO_RECORDING);
         finalStatus = status;
       }
       if (finalStatus !== 'granted') {
-        alert('Failed to get push token for push notification!');
+        alert('Please enable selected permissions!');
         return;
       }
       token = await Notifications.getExpoPushTokenAsync();
@@ -139,7 +139,7 @@ export default class App extends React.Component {
   async componentDidMount() {     
     console.log("app")
     await Font.loadAsync({ 'montserrat-regular': require('./assets/font/Montserrat-Regular.ttf'), 'montserrat-bold': require('./assets/font/Montserrat-Bold.ttf') } ); this.setState({fontLoaded: true, isLoadingComplete: true}); 
-    this.registerForPushNotificationsAsync();
+    this.notificationAndMicrophone();
     this.getLocationAsync();  
     this.newsFetch();
   }
