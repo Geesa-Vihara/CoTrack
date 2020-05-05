@@ -1,14 +1,10 @@
 import Firebase, {db} from '../config/firebase';
 import { AsyncStorage } from 'react-native';
-import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
 
 export const signUp = async function signUp(data) {
     try {
         const response = await Firebase.auth().createUserWithEmailAndPassword(data.email,data.password);
-        let location = await Location.getCurrentPositionAsync({});
-        const longitude=location.coords.longitude;   
-        const latitude= location.coords.latitude;  
         console.log('user', response.user.uid)
         if(response.user.uid) {
             console.log('if user')
@@ -21,8 +17,6 @@ export const signUp = async function signUp(data) {
             const crowdcount = {
                 userId:response.user.uid,
                 count:0,
-                homeLon:longitude,
-                homeLat:latitude,
             }
             await db.collection('users').doc(response.user.uid).set(user)
             await db.collection('crowdcount').doc(response.user.uid).set(crowdcount)
@@ -51,8 +45,8 @@ export const login = async function login(credentials) {
 export const logout = async function logout() {
     try {
         const response = await Firebase.auth().signOut()
-        await AsyncStorage.removeItem('uid');
-        await TaskManager.unregisterAllTasksAsync()
+        //await AsyncStorage.removeItem('uid');
+        //await TaskManager.unregisterAllTasksAsync()
         return true
     } catch (error) {
         console.log('error',error);

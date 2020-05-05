@@ -32,7 +32,7 @@ class DrawerItem extends React.Component {
             style={{ opacity: 0.5 }}
           />
         );
-      case "Components":
+      /* case "Components":
         return (
           <Icon
             name="atom2x"
@@ -100,17 +100,7 @@ class DrawerItem extends React.Component {
             style={{ borderColor: "rgba(0,0,0,0.5)", opacity: 0.5 }}
             color={focused ? nowTheme.COLORS.PRIMARY : "white"}
           />
-        );
-        case "Home Map":
-          return (
-            <Icon
-              name="map"
-              family="FontAwesome5 (solid)"
-              size={18}
-              style={{ borderColor: "rgba(0,0,0,0.5)", opacity: 0.5 }}
-              color={focused ? nowTheme.COLORS.PRIMARY : "white"}
-            />
-          );
+        ); */
         case "Meal TimePicker":
           return (
             <Icon
@@ -121,6 +111,27 @@ class DrawerItem extends React.Component {
               color={focused ? nowTheme.COLORS.PRIMARY : "white"}
             />
           );
+          
+        case "Map":
+          return (
+            <Icon
+              name="map"
+              family="FontAwesome5 (solid)"
+              size={18}
+              style={{ borderColor: "rgba(0,0,0,0.5)", opacity: 0.5 }}
+              color={focused ? nowTheme.COLORS.PRIMARY : "white"}
+            />
+          );
+          case "Your Places":
+            return (
+              <Icon
+              name="paper"
+              family="NowExtra"
+              size={18}
+              color={focused ? nowTheme.COLORS.PRIMARY : "white"}
+              style={{ opacity: 0.5 }}
+            />
+            );
       case "LOGOUT":
         return (
           <Icon

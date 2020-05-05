@@ -32,7 +32,8 @@ function CustomDrawerContent({
     //"Articles",
     //"Profile",
     //"Account",
-    "Home Map"
+    "Map",
+    "Your Places"
   ];
   return (
     <Block
