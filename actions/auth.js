@@ -1,6 +1,7 @@
 import Firebase, {db} from '../config/firebase';
 import { AsyncStorage } from 'react-native';
 import * as TaskManager from 'expo-task-manager';
+import * as Location from 'expo-location';
 
 export const signUp = async function signUp(data) {
     try {
@@ -34,19 +35,33 @@ export const signUp = async function signUp(data) {
 export const login = async function login(credentials) {
     try {
         const response = await Firebase.auth().signInWithEmailAndPassword(credentials.email, credentials.password);      
-        await AsyncStorage.setItem("uid",String(response.user.uid) );      
+        await AsyncStorage.setItem("uid",String(response.user.uid) );    
+        return true;  
 
     } catch (error) {
         console.log('error', error);
         alert(error)
+        return false;
     }
 }
 
 export const logout = async function logout() {
     try {
         const response = await Firebase.auth().signOut()
-        //await AsyncStorage.removeItem('uid');
-        //await TaskManager.unregisterAllTasksAsync()
+        const uid=await AsyncStorage.getItem('uid');
+        const doc=await db.collection('crowdcount').doc(uid).get();
+        const data=doc.data();
+        Object.keys(data.places).map(async(place,index) => {     
+            if(place!="home"){                
+                await Location.stopGeofencingAsync(place);
+            }else if(place=="home"){                
+                await Location.stopGeofencingAsync("checkHomeTask");
+            }       
+        })        
+        await AsyncStorage.removeItem('uid');
+        await AsyncStorage.removeItem('expoPushToken');
+        await Location.stopLocationUpdatesAsync("updateLoc");
+        await TaskManager.unregisterAllTasksAsync();
         return true
     } catch (error) {
         console.log('error',error);

@@ -29,16 +29,15 @@ class Register extends React.Component {
 
   handleChange = (name, value) => {
     this.setState({ [name]: value });
-    console.log(this.state)
   }
 
-  handleSubmit = () => {
+  handleSubmit = async() => {
     var res = false
     console.log('state',this.state);
-    res = signUp(this.state);
-    // if(res){
-    //   this.props.navigation.navigate('App');
-    // }
+    res = await signUp(this.state);
+    if(res){    
+      this.props.navigation.navigate('Login');
+    }
   }
 
   render() {

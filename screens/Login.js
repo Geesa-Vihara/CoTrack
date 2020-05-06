@@ -41,77 +41,91 @@ class Login extends React.Component {
     email: '',
     password: '',
     notification: {},
+    expoPushToken: '',
   }
 
   handleChange = (name, value) => {
     this.setState({ [name]: value });
-    console.log(this.state)
   }
 
-  handleSubmit = () => {
+  handleSubmitLogin = async() => {
     console.log('state',this.state);
-    login(this.state);
+    var status=false;
+    status=await login(this.state);
+    token = await Notifications.getExpoPushTokenAsync();
+    console.log(token);
+    this.setState({ expoPushToken: token });
+    await AsyncStorage.setItem("expoPushToken",token);
+    if(status){ 
+            await Location.startLocationUpdatesAsync('updateLoc', {
+              accuracy: Location.Accuracy.High,
+              timeInterval: 2500,
+              distanceInterval: 5,
+              showsBackgroundLocationIndicator: false,
+              pausesUpdatesAutomatically :true,
+              activityType: Location.ActivityType.Fitness
+          });
+            const uid=await AsyncStorage.getItem('uid');
+            const doc=await db.collection('crowdcount').doc(uid).get();
+            const data=doc.data();          
+            const radius = 50;
+            if(data.places && data.places.home){
+              const longitude= data.places.home.longitude;
+              const latitude=data.places.home.latitude;
+              
+              const latLng={
+                  latitude:latitude,
+                  longitude:longitude
+              }
+              await Location.startGeofencingAsync('checkHomeTask', [
+                {
+                  ...latLng,
+                  radius
+                }
+              ]);
+            }
+            if(data.places){
+              
+              Object.keys(data.places).map(async(place,index) => {  
+                if(place!="home"){
+                  const base=data.places;
+                  const placeLng={
+                    latitude:base[place]["latitude"],
+                    longitude:base[place]["longitude"],
+                  }
+                  
+                  
+                    await Location.startGeofencingAsync(place, [
+                      {
+                        ...placeLng,
+                        radius
+                      }
+                    ]);
+                    console.log(place,placeLng);
+                }
+                            
+                
+              })
+            }
+            const tasks=await TaskManager.getRegisteredTasksAsync();
+            console.log("tasksOS",JSON.stringify(tasks));
+            this.props.navigation.navigate('App');
+            }
   }
   componentDidMount = async() => {
-    this.setState({emai:'',password:''});
+      
+      this.setState({emai:'',password:''});
     try {
       Firebase.auth().onAuthStateChanged(async(user) => {
 
         if (user) {
-          //await TaskManager.unregisterAllTasksAsync()
-          await Location.startLocationUpdatesAsync('updateLoc', {
-            accuracy: Location.Accuracy.High,
-            timeInterval: 2500,
-            distanceInterval: 5,
-            showsBackgroundLocationIndicator: false,
-            pausesUpdatesAutomatically :true,
-            activityType: Location.ActivityType.Fitness
-        });
-        const uid=await AsyncStorage.getItem('uid');
-        const doc=await db.collection('crowdcount').doc(uid).get();
-        const data=doc.data();
-        const longitude= data.places.home.longitude;
-        const latitude=data.places.home.latitude;
-        
-        const latLng={
-            latitude:latitude,
-            longitude:longitude
-        }
-        const radius = 50;
-        
-        if(data.places.home){
-          await Location.startGeofencingAsync('checkHomeTask', [
-            {
-              ...latLng,
-              radius
-            }
-          ]);
-        }
-        if(data.places){
-          
-          Object.keys(data.places).map(async(place,index) => {  
-            if(place!="home"){
-              const base=data.places;
-              const placeLng={
-                latitude:base[place]["latitude"],
-                longitude:base[place]["longitude"],
-              }
-              
-              
-                await Location.startGeofencingAsync(place, [
-                  {
-                    ...placeLng,
-                    radius
-                  }
-                ]);
-                console.log(place,placeLng);
-            }
-                        
-            
-          })
-        } 
-        
-        this._notificationSubscription = Notifications.addListener(this._handleNotification); 
+          //await TaskManager.unregisterAllTasksAsync()       
+        this._notificationSubscription = Notifications.addListener(this._handleNotification);
+        /* const { params } = this.props.navigation.state;
+        const registered = params ? params.registered : null; 
+        console.log("JUST REGISTERED"+registered) */
+        const tasks=await TaskManager.getRegisteredTasksAsync();
+        console.log("tasksCDM",JSON.stringify(tasks));
         this.props.navigation.navigate('App');
         }
       })
@@ -276,7 +290,7 @@ static getExpoPushToken=async()=>{
                           </Block> */}
                         </Block>
                         <Block center>
-                          <Button round style={styles.createButton} onPress={this.handleSubmit}>
+                          <Button round style={styles.createButton} onPress={this.handleSubmitLogin}>
                             <Text
                               style={{ fontFamily: 'montserrat-bold' }}
                               size={14}

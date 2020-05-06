@@ -80,7 +80,7 @@ class Visits extends React.Component {
             await db.collection('crowdcount').doc(uid).update(places,{longitude:longitude,latitude:latitude});
         }
         var res = false;
-        res = logout();
+        res = await logout();
 
         if(res){
         this.props.navigation.navigate('Login');
