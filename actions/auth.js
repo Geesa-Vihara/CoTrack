@@ -19,8 +19,14 @@ export const signUp = async function signUp(data) {
                 userId:response.user.uid,
                 count:0,
             }
-            await db.collection('users').doc(response.user.uid).set(user)
-            await db.collection('crowdcount').doc(response.user.uid).set(crowdcount)
+            const mealTimes = {
+                breakfast : 0,
+                lunch : 0,
+                dinner : 0,
+            }
+            await db.collection('users').doc(response.user.uid).set(user);
+            await db.collection('crowdcount').doc(response.user.uid).set(crowdcount);
+            await db.collection('mealTimes').doc(response.user.uid).set(mealTimes);
             await AsyncStorage.setItem("uid",String(response.user.uid) );    
             
             return true
