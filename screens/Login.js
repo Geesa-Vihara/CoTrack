@@ -18,7 +18,7 @@ import {db} from '../config/firebase';
 const { width, height } = Dimensions.get('screen');
 
 import Firebase from "../config/firebase"
-import { login, getAuthState } from "../actions/auth.js";
+import { login, getAuthState, signInGoogle } from "../actions/auth.js";
 
 import { Notifications } from 'expo';
 import { Audio } from 'expo-av';
@@ -46,6 +46,11 @@ class Login extends React.Component {
 
   handleChange = (name, value) => {
     this.setState({ [name]: value });
+  }
+
+  handleGoogleLogin = async() => {
+    console.log('google');
+    await signInGoogle();
   }
 
   handleSubmitLogin = async() => {
@@ -205,6 +210,7 @@ static getExpoPushToken=async()=>{
                         iconSize={theme.SIZES.BASE * 1.625}
                         color={nowTheme.COLORS.GOOGLE}
                         style={[styles.social, styles.shadow]}
+                        onPress={this.handleGoogleLogin}
                       />
                       <GaButton
                         round

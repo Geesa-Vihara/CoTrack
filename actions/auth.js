@@ -1,4 +1,4 @@
-import Firebase, {db} from '../config/firebase';
+import Firebase, {db, provider} from '../config/firebase';
 import { AsyncStorage } from 'react-native';
 import * as TaskManager from 'expo-task-manager';
 import * as Location from 'expo-location';
@@ -47,6 +47,33 @@ export const login = async function login(credentials) {
     } catch (error) {
         console.log('error', error);
         alert(error)
+        return false;
+    }
+}
+
+export const signInGoogle = async function signInGoogle() {
+    try {
+        //var provider = new Firebase.auth.GoogleAuthProvider();
+
+        const response = await Firebase.auth().signInWithRedirect(provider);
+
+        if(response.user.uid) {
+            console.log('if user')
+            const user = {
+                email: data.email,
+                name: data.name,
+                longitude: 0,
+                latitude: 0
+            }
+
+            await db.collection('users').doc(response.user.uid).update(user);
+            
+            return true
+        }
+
+    } catch (error) {
+        console.log(error)
+        alert(error);
         return false;
     }
 }
