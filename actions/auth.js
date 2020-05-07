@@ -84,20 +84,26 @@ export const logout = async function logout() {
         const uid=await AsyncStorage.getItem('uid');
         const doc=await db.collection('crowdcount').doc(uid).get();
         const data=doc.data();
-        Object.keys(data.places).map(async(place,index) => {     
-            if(place!="home"){                
-                await Location.stopGeofencingAsync(place);
-            }else if(place=="home"){                
-                await Location.stopGeofencingAsync("checkHomeTask");
-            }       
-        })        
+        if(data.places){
+            Object.keys(data.places).map(async(place,index) => {                
+                const check= await TaskManager.isTaskRegisteredAsync(place);     
+                if(place!="home"){ 
+                    if(check){            
+                        await Location.stopGeofencingAsync(place);
+                    }  
+                    
+                }else if(place=="home"){  
+                    if(check){
+                        await Location.stopGeofencingAsync("checkHomeTask");
+                    }                
+                }       
+            })  
+        }              
         await AsyncStorage.removeItem('uid');
         await AsyncStorage.removeItem('expoPushToken');
-        await Location.stopLocationUpdatesAsync("updateLoc");
-        await TaskManager.unregisterAllTasksAsync();
         return true
     } catch (error) {
-        console.log('error',error);
+        console.log('errortyty',error);
         return false
     }
 }
