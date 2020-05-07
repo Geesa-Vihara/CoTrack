@@ -77,41 +77,20 @@ class Login extends React.Component {
             const doc=await db.collection('crowdcount').doc(uid).get();
             const data=doc.data();          
             const radius = 50;
-            if(data.places && data.places.home){
-              const longitude= data.places.home.longitude;
-              const latitude=data.places.home.latitude;
-              
-              const latLng={
-                  latitude:latitude,
-                  longitude:longitude
-              }
-              await Location.startGeofencingAsync('checkHomeTask', [
-                {
-                  ...latLng,
-                  radius
-                }
-              ]);
-            }
             if(data.places){
-              Object.keys(data.places).map(async(place,index) => {  
-                if(place!="home"){
-                  const base=data.places;
-                  const placeLng={
-                    latitude:base[place]["latitude"],
-                    longitude:base[place]["longitude"],
-                  }
-                  
-                  
-                    await Location.startGeofencingAsync(place, [
-                      {
-                        ...placeLng,
-                        radius
-                      }
-                    ]);
-                    console.log(place,placeLng);
+              Object.keys(data.places).map(async(place,index) => { 
+                const base=data.places;
+                const placeLng={
+                  latitude:base[place]["latitude"],
+                  longitude:base[place]["longitude"],
                 }
-                            
-                
+                  await Location.startGeofencingAsync(place, [
+                    {
+                      ...placeLng,
+                      radius
+                    }
+                  ]);
+                  console.log(place,placeLng);
               })
             }
             const tasks=await TaskManager.getRegisteredTasksAsync();
@@ -411,9 +390,10 @@ export default Login;
 TaskManager.defineTask('updateLoc', async({ data, error }) => {
   if (error) {
     // check `error.message` for more details.
-    console.log("errorrrrrr"+error)
+    alert("errorrrrrr"+error)
     return;
   }
+  try{
   const {locations}=data;
   
   console.log('Received new locations', locations[0]);
@@ -453,19 +433,22 @@ TaskManager.defineTask('updateLoc', async({ data, error }) => {
           await soundObject.playAsync();     
     
       } catch (error) {
-          //console.log("error"+error);
+          alert("error"+error);
       }
     }
   })
-  
+}catch(error){
+  alert("error"+error);
+}
   
 });
 
-TaskManager.defineTask('checkHomeTask', async({ data: { eventType, region }, error }) => {
+TaskManager.defineTask('home', async({ data: { eventType, region }, error }) => {
   if (error) {
     // check `error.message` for more details.
     return;
   }
+  try{
   console.log(eventType);
   
   const token=await Login.getExpoPushToken()
@@ -529,13 +512,17 @@ TaskManager.defineTask('checkHomeTask', async({ data: { eventType, region }, err
       //console.log("error"+error);
   }
   }
+}catch(error){
+  alert("error"+error);
+}
 });
 
 TaskManager.defineTask('school', async({ data: { eventType, region }, error }) => {
   if (error) {
-    // check `error.message` for more details.
+    alert(error)
     return;
   }
+  try{
   console.log(eventType);
   
   const token=await Login.getExpoPushToken()
@@ -599,12 +586,16 @@ TaskManager.defineTask('school', async({ data: { eventType, region }, error }) =
       //console.log("error"+error);
   } 
   }
+}catch(error){
+  alert("error"+error);
+}
 });
 TaskManager.defineTask('university', async({ data: { eventType, region }, error }) => {
   if (error) {
-    // check `error.message` for more details.
+    alert(error)
     return;
   }
+  try{
   console.log(eventType);
   
   const token=await Login.getExpoPushToken()
@@ -668,12 +659,16 @@ TaskManager.defineTask('university', async({ data: { eventType, region }, error 
       //console.log("error"+error);
   } 
   }
+}catch(error){
+  alert("error"+error);
+}
 });
 TaskManager.defineTask('workplace', async({ data: { eventType, region }, error }) => {
   if (error) {
-    // check `error.message` for more details.
+    alert(error)
     return;
   }
+  try{
   console.log(eventType);
   
   const token=await Login.getExpoPushToken()
@@ -737,5 +732,8 @@ TaskManager.defineTask('workplace', async({ data: { eventType, region }, error }
       //console.log("error"+error);
   } 
   }
+}catch(error){
+  alert("error"+error);
+}
 });
 

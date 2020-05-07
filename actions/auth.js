@@ -86,17 +86,12 @@ export const logout = async function logout() {
         const data=doc.data();
         if(data.places){
             Object.keys(data.places).map(async(place,index) => {                
-                const check= await TaskManager.isTaskRegisteredAsync(place);     
-                if(place!="home"){ 
+                const check= await TaskManager.isTaskRegisteredAsync(place); 
                     if(check){            
                         await Location.stopGeofencingAsync(place);
                     }  
                     
-                }else if(place=="home"){  
-                    if(check){
-                        await Location.stopGeofencingAsync("checkHomeTask");
-                    }                
-                }       
+                       
             })  
         }              
         await AsyncStorage.removeItem('uid');

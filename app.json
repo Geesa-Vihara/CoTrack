@@ -3,8 +3,10 @@
     "name": "BSafe",
     "slug": "BSafe",
     "privacy": "public",
-    "sdkVersion": "36.0.0",
-    "platforms": ["ios", "android"],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/bsafe.png",
@@ -16,7 +18,9 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
@@ -24,7 +28,7 @@
           "location",
           "fetch"
         ]
-      }      
+      }
     },
     "android": {
       "package": "com.Ampersand.BSafe",
@@ -32,11 +36,13 @@
       "config": {
         "googleMaps": {
           "apiKey": "API_KEY"
-        }     
-      }  
+        }
+      }
     },
     "packagerOpts": {
-      "assetExts": ["ttf"]
+      "assetExts": [
+        "ttf"
+      ]
     }
   }
 }
