@@ -57,18 +57,21 @@ class Login extends React.Component {
     console.log('state',this.state);
     var status=false;
     status=await login(this.state);
-    token = await Notifications.getExpoPushTokenAsync();
+    const token = await Notifications.getExpoPushTokenAsync();
     console.log(token);
     this.setState({ expoPushToken: token });
     await AsyncStorage.setItem("expoPushToken",token);
     if(status){ 
-            await Location.startLocationUpdatesAsync('updateLoc', {
+            /* await Location.startLocationUpdatesAsync('updateLoc', {
               accuracy: Location.Accuracy.High,
               timeInterval: 2500,
               distanceInterval: 5,
               showsBackgroundLocationIndicator: false,
               pausesUpdatesAutomatically :true,
               activityType: Location.ActivityType.Fitness
+          }); */
+          await Location.startLocationUpdatesAsync('updateLoc', {
+            accuracy: Location.Accuracy.BestForNavigation
           });
             const uid=await AsyncStorage.getItem('uid');
             const doc=await db.collection('crowdcount').doc(uid).get();
@@ -90,7 +93,6 @@ class Login extends React.Component {
               ]);
             }
             if(data.places){
-              
               Object.keys(data.places).map(async(place,index) => {  
                 if(place!="home"){
                   const base=data.places;
@@ -125,13 +127,10 @@ class Login extends React.Component {
 
         if (user) {
           //await TaskManager.unregisterAllTasksAsync()       
-        this._notificationSubscription = Notifications.addListener(this._handleNotification);
-        /* const { params } = this.props.navigation.state;
-        const registered = params ? params.registered : null; 
-        console.log("JUST REGISTERED"+registered) */
-        const tasks=await TaskManager.getRegisteredTasksAsync();
-        console.log("tasksCDM",JSON.stringify(tasks));
-        this.props.navigation.navigate('App');
+          this._notificationSubscription = Notifications.addListener(this._handleNotification);
+          const tasks=await TaskManager.getRegisteredTasksAsync();
+          console.log("tasksCDM",JSON.stringify(tasks));
+          this.props.navigation.navigate('App');
         }
       })
 
@@ -412,12 +411,14 @@ export default Login;
 TaskManager.defineTask('updateLoc', async({ data, error }) => {
   if (error) {
     // check `error.message` for more details.
+    console.log("errorrrrrr"+error)
     return;
   }
   const {locations}=data;
+  
+  console.log('Received new locations', locations[0]);
   const uid=await AsyncStorage.getItem('uid')
   console.log("uid"+uid)
-  console.log('Received new locations', locations[0]);
   await db.collection('users').doc(uid).update({
     "latitude":locations[0].coords.latitude,
     "longitude":locations[0].coords.longitude
