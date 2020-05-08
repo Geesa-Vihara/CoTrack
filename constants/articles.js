@@ -1,8 +1,9 @@
+
 export default [
   {
     title: 'Total Confirmed Cases',
     image: require("../assets/imgs/hospital.jpg"),
-    description:50
+    
   },
   {
     title: 'Active Cases',
