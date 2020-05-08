@@ -5,16 +5,14 @@ import { Block, theme, Text } from "galio-framework";
 import { Card, Button } from "../components";
 const { width } = Dimensions.get('screen');
 
-class Home extends React.Component {
+class Global extends React.Component {
 
   state = { 
-    local_total_cases:0,
    global_total_cases:0,
-   local_new_cases:0,
-   local_deaths:0,
-   local_recovered:0,
-   local_active_cases:0,
-   local_total_number_of_individuals_in_hospitals:0,
+   global_new_cases:0,
+   global_deaths:0,
+   global_recovered:0,
+   global_new_deaths:0,
  };
   
   renderArticles = () => {
@@ -30,50 +28,45 @@ class Home extends React.Component {
               item={{
                 title: 'Total Cases',
                 image: require("../assets/imgs/ac.jpg"),
-                description: `${this.state.local_total_cases}`
+                description: `${this.state.global_total_cases}`
               }}
               style={{ marginRight: theme.SIZES.BASE}}
             >
-              <Text>{this.state.local_total_cases}</Text>
               </Card>
-            {/* <Text>{this.state.local_total_cases}</Text> */}
-            <Card item={{
-                title: 'Active Cases',
-                image: require("../assets/imgs/active.jpg"),       
-                description: `${this.state.local_active_cases}`
-            }} />
+             
 
           </Block>
           <Block flex row>
-            <Card
+          <Card
               item={{
                 title: 'New Cases',
                 image: require("../assets/imgs/tcc.jpg"),
-                description: `${this.state.local_new_cases}`
+                description: `${this.state.global_new_cases}`
               }}
               style={{ marginRight: theme.SIZES.BASE }}
             />
-            <Card item={{
-                title: 'Investigations',
-                image: require("../assets/imgs/ui.jpg"),
-                description: `${this.state.local_total_number_of_individuals_in_hospitals}`
-            }} />
           </Block>
+        
           <Block flex row>
             <Card
               item={{
                 title: 'Recovered',
                 image: require("../assets/imgs/rec.jpg"),
-                description: `${this.state.local_recovered}`
+                description: `${this.state.global_recovered}`
               }}
               style={{ marginRight: theme.SIZES.BASE }}
             />
-            <Card item={{
+         
+          </Block>
+
+          <Block flex row>
+          <Card item={{
                  title: 'Deaths',
                  image: require("../assets/imgs/dead.jpg"),
-                 description: `${this.state.local_deaths}`
+                 description: `${this.state.global_deaths}`
             }} />
-          </Block>
+         
+         </Block>
        
         </Block>
       </ScrollView>
@@ -89,19 +82,17 @@ class Home extends React.Component {
     .then(res => res.json())
     .then(data => {
 
-    console.log("local total cases = "+JSON.stringify(data.data.local_total_cases));
+  
     console.log("global total cases = "+data.data.global_total_cases);
-    console.log("local deaths = "+data.data.local_deaths);
-    console.log("local new cases = "+data.data.local_new_cases);
-    console.log("local recovered cases = "+data.data.local_recovered);
+   
 
       this.setState({
         local_total_cases: data.data.local_total_cases,
         global_total_cases: data.data.global_total_cases,
-        local_deaths : data.data.local_deaths,
-        local_new_cases : data.data.local_new_cases,
-        local_recovered : data.data.local_recovered,
-        local_active_cases : data.data.local_active_cases,
+        global_deaths : data.data.global_deaths,
+        global_new_cases : data.data.global_new_cases,
+        global_recovered : data.data.global_recovered,
+        global_new_deaths : data.data.global_new_deaths,
         local_total_number_of_individuals_in_hospitals : data.data.local_total_number_of_individuals_in_hospitals,
         isLoading: false,
         
@@ -144,4 +135,9 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Home;
+  
+
+
+
+
+export default Global;

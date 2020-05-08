@@ -25,6 +25,7 @@ import handWash from '../screens/handWash';
 import putMask from '../screens/putMask';
 import MealTimePicker from '../screens/MealTimePicker'
 import Visits from '../screens/Visits';
+import Global from '../screens/Global';
 
 const { width } = Dimensions.get("screen");
 
@@ -159,12 +160,52 @@ function HomeStack(props) {
   return (
     <Stack.Navigator mode="card" headerMode="screen">
       <Stack.Screen
-        name="Home"
+        name="Dashboard"
         component={Home}
         options={{
           header: ({ navigation, scene }) => (
             <Header
-              title="Home"
+              title="Dashboard"
+              search
+              options
+              navigation={navigation}
+              scene={scene}
+            />
+          ),
+          cardStyle: { backgroundColor: "#FFFFFF" }
+        }}
+      />
+      <Stack.Screen
+        name="Pro"
+        component={Pro}
+        options={{
+          header: ({ navigation, scene }) => (
+            <Header
+              title=""
+              back
+              white
+              transparent
+              navigation={navigation}
+              scene={scene}
+            />
+          ),
+          headerTransparent: true
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
+
+function GlobalStack(props) {
+  return (
+    <Stack.Navigator mode="card" headerMode="screen">
+      <Stack.Screen
+        name="Global"
+        component={Global}
+        options={{
+          header: ({ navigation, scene }) => (
+            <Header
+              title="Dashboard"
               search
               options
               navigation={navigation}
@@ -370,9 +411,10 @@ function AppStack(props) {
           fontWeight: "normal"
         }
       }}
-      initialRouteName="Home"
+      initialRouteName="Dashboard"
     >
-      <Drawer.Screen name="Home" component={HomeStack} />
+      <Drawer.Screen name="Dashboard" component={HomeStack} />
+      <Drawer.Screen name="Global" component={GlobalStack} />
       <Drawer.Screen name="Map" component={MapStack} />
       <Drawer.Screen name="Your Places" component={VisitsStack} />       
       <Drawer.Screen name="HandWash" component={handWashStack} />      
