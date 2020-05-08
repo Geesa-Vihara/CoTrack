@@ -19,11 +19,12 @@ import CustomDrawerContent from "./Menu";
 // header for screens
 import { Header, Icon} from '../components';
 import { nowTheme, tabs } from "../constants";
-import homeMap from '../screens/homeMap';
+import Map from '../screens/Map';
 import OnstartMap from '../screens/OnstartMap';
 import handWash from '../screens/handWash';
 import putMask from '../screens/putMask';
 import MealTimePicker from '../screens/MealTimePicker'
+import Visits from '../screens/Visits';
 
 const { width } = Dimensions.get("screen");
 
@@ -194,16 +195,16 @@ function HomeStack(props) {
   );
 }
 
-function HomeMapStack(props) {
+function MapStack(props) {
   return (
     <Stack.Navigator mode="card" headerMode="screen">
       <Stack.Screen
-        name="HomeMap"
-        component={homeMap}
+        name="Map"
+        component={Map}
         options={{
           header: ({ navigation, scene }) => (
             <Header
-              title="Home Map"
+              title="Map"
               transparent
               navigation={navigation}
               scene={scene}
@@ -243,6 +244,45 @@ function MealTimeStack(props) {
           header: ({ navigation, scene }) => (
             <Header
               title="Meal Timepicker"
+              transparent
+              navigation={navigation}
+              scene={scene}
+            />
+          ),
+          cardStyle: { backgroundColor: "#FFFFFF" }
+        }}
+      />
+      <Stack.Screen
+        name="Pro"
+        component={Pro}
+        options={{
+          header: ({ navigation, scene }) => (
+            <Header
+              title=""
+              back
+              white
+              transparent
+              navigation={navigation}
+              scene={scene}
+            />
+          ),
+          headerTransparent: true
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
+
+function VisitsStack(props) {
+  return (
+    <Stack.Navigator mode="card" headerMode="screen">
+      <Stack.Screen
+        name="Visits"
+        component={Visits}
+        options={{
+          header: ({ navigation, scene }) => (
+            <Header
+              title="Your Places"
               transparent
               navigation={navigation}
               scene={scene}
@@ -333,15 +373,18 @@ function AppStack(props) {
       initialRouteName="Home"
     >
       <Drawer.Screen name="Home" component={HomeStack} />
-      <Drawer.Screen name="Components" component={ComponentsStack} />
+      <Drawer.Screen name="Map" component={MapStack} />
+      <Drawer.Screen name="Your Places" component={VisitsStack} />       
+      <Drawer.Screen name="HandWash" component={handWashStack} />      
+      <Drawer.Screen name="PutMask" component={putMaskStack} />
+      <Drawer.Screen name="Meal TimePicker" component={MealTimeStack} />
+      {/* <Drawer.Screen name="Components" component={ComponentsStack} />
       <Drawer.Screen name="Articles" component={ArticlesStack} />
       <Drawer.Screen name="Profile" component={ProfileStack} />
       <Drawer.Screen name="Account" component={AccountStack} />
-      <Drawer.Screen name="Settings" component={AccountStack} />
-      <Drawer.Screen name="Home Map" component={HomeMapStack} />
-      <Drawer.Screen name="HandWash" component={handWashStack} />      
-      <Drawer.Screen name="PutMask" component={putMaskStack} />
-      <Drawer.Screen name="Meal TimePicker" component={MealTimeStack} /> 
+      <Drawer.Screen name="Settings" component={AccountStack} /> */}
+       
+      
     </Drawer.Navigator>
   );
 }

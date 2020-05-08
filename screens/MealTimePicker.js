@@ -10,8 +10,10 @@ import {
   Alert 
 } from 'react-native';
 import { Block, Checkbox, Text, Button as GaButton, theme } from 'galio-framework';
+import { Picker } from "react-native";
 
-import TimePicker from 'react-native-simple-time-picker';
+//import TimePicker from 'react-native-simple-time-picker';
+import TimePicker from '../components/TimePicker';
 import moment from 'moment';
 
 import { Button, Icon, Input } from '../components';
@@ -29,8 +31,8 @@ const DismissKeyboard = ({ children }) => (
 class MealTimePicker extends React.Component {
   
   state = {
-    //breakfastHour: 0,
-    //breakfastMinutes: 0,
+    breakfastHour: 0,
+    breakfastMinutes: 0,
     lunchHour: 0,
     lunchMinutes: 0,
     dinnerHour: 0,
@@ -56,19 +58,20 @@ class MealTimePicker extends React.Component {
     try {
       const mealTimes = await getMealTimes();
 
-      const breakfast = moment(mealTimes.breakfast)
-      const lunch = moment(mealTimes.lunch)
-      const dinner = moment(mealTimes.dinner)
+      if(mealTimes.breakfast!=0 && mealTimes.lunch!=0 && mealTimes.dinner!=0){
+        const breakfast = moment(mealTimes.breakfast)
+        const lunch = moment(mealTimes.lunch)
+        const dinner = moment(mealTimes.dinner)
 
-      this.setState({
-        breakfastHour : breakfast.hour(),
-        breakfastMinutes : breakfast.minute(),
-        lunchHour : lunch.hour(),
-        lunchMinutes : lunch.minute(),
-        dinnerHour : dinner.hour(),
-        dinnerMinutes : dinner.minute()
-      })
-
+        this.setState({
+          breakfastHour : breakfast.hour(),
+          breakfastMinutes : breakfast.minute(),
+          lunchHour : lunch.hour(),
+          lunchMinutes : lunch.minute(),
+          dinnerHour : dinner.hour(),
+          dinnerMinutes : dinner.minute()
+        })
+      }
       console.log(this.state); 
 
     } catch (error) {
@@ -181,6 +184,12 @@ class MealTimePicker extends React.Component {
 
   render() {
     console.log(this.state)
+    const items = [];
+    for (let i = 0; i <= 59 ; i++) {
+      items.push(
+        <Picker.Item key={i} value={i} label={`${i.toString()}`} />,
+      );
+    }
     return (
       <DismissKeyboard>
         <Block flex middle>
@@ -231,6 +240,13 @@ class MealTimePicker extends React.Component {
                             >
                             Breakfast Time
                             </Text>
+                            {/* <Picker
+                              selectedValue={0}
+                              style={{ height: 50, width: 150 }}
+                              onValueChange={(itemValue, itemIndex) => console.log(itemValue)}
+                            >
+                              {items}
+                            </Picker> */}
                             <TimePicker
                               selectedHours={this.state.breakfastHour}
                               selectedMinutes={this.state.breakfastMinutes}
@@ -360,7 +376,7 @@ const styles = StyleSheet.create({
   createButton: {
     color:nowTheme.COLORS.PRIMARY,
     width: width * 0.5,
-    marginTop: 25,
+    marginTop: 15,
     marginBottom: 40
   },
   social: {
@@ -371,7 +387,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10
   },
   timepickerInput: { 
-    paddingVertical: 8, 
+    paddingVertical: 6, 
     paddingHorizontal: 80, 
     borderWidth: 1, 
     borderColor: 'grey', 

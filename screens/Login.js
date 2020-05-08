@@ -18,7 +18,7 @@ import {db} from '../config/firebase';
 const { width, height } = Dimensions.get('screen');
 
 import Firebase from "../config/firebase"
-import { login, getAuthState } from "../actions/auth.js";
+import { login, getAuthState, signInGoogle } from "../actions/auth.js";
 
 import { Notifications } from 'expo';
 import { Audio } from 'expo-av';
@@ -41,50 +41,75 @@ class Login extends React.Component {
     email: '',
     password: '',
     notification: {},
+    expoPushToken: '',
   }
 
   handleChange = (name, value) => {
     this.setState({ [name]: value });
-    console.log(this.state)
   }
 
-  handleSubmit = () => {
-    console.log('state',this.state);
-    login(this.state);
+  handleGoogleLogin = async() => {
+    console.log('google');
+    await signInGoogle();
   }
-  componentDidMount = () => {
-    this.setState({emai:'',password:''});
+
+  handleSubmitLogin = async() => {
+    console.log('state',this.state);
+    var status=false;
+    status=await login(this.state);
+    const token = await Notifications.getExpoPushTokenAsync();
+    console.log(token);
+    this.setState({ expoPushToken: token });
+    await AsyncStorage.setItem("expoPushToken",token);
+    if(status){ 
+            /* await Location.startLocationUpdatesAsync('updateLoc', {
+              accuracy: Location.Accuracy.High,
+              timeInterval: 2500,
+              distanceInterval: 5,
+              showsBackgroundLocationIndicator: false,
+              pausesUpdatesAutomatically :true,
+              activityType: Location.ActivityType.Fitness
+          }); */
+          await Location.startLocationUpdatesAsync('updateLoc', {
+            accuracy: Location.Accuracy.BestForNavigation
+          });
+            const uid=await AsyncStorage.getItem('uid');
+            const doc=await db.collection('crowdcount').doc(uid).get();
+            const data=doc.data();          
+            const radius = 50;
+            if(data.places){
+              Object.keys(data.places).map(async(place,index) => { 
+                const base=data.places;
+                const placeLng={
+                  latitude:base[place]["latitude"],
+                  longitude:base[place]["longitude"],
+                }
+                  await Location.startGeofencingAsync(place, [
+                    {
+                      ...placeLng,
+                      radius
+                    }
+                  ]);
+                  console.log(place,placeLng);
+              })
+            }
+            const tasks=await TaskManager.getRegisteredTasksAsync();
+            console.log("tasksOS",JSON.stringify(tasks));
+            this.props.navigation.navigate('App');
+            }
+  }
+  componentDidMount = async() => {
+      
+      this.setState({emai:'',password:''});
     try {
       Firebase.auth().onAuthStateChanged(async(user) => {
 
         if (user) {
-          await TaskManager.unregisterAllTasksAsync()
-          await Location.startLocationUpdatesAsync('updateLoc', {
-            accuracy: Location.Accuracy.High,
-            timeInterval: 2500,
-            distanceInterval: 5,
-            showsBackgroundLocationIndicator: false,
-            pausesUpdatesAutomatically :true,
-            activityType: Location.ActivityType.Fitness
-        });
-        const uid=await AsyncStorage.getItem('uid');
-        const doc=await db.collection('crowdcount').doc(uid).get();
-        const data=await doc.data();
-        const longitude= data.homeLon;
-        const latitude=data.homeLat;
-        const latLng={
-            latitude:latitude,
-            longitude:longitude
-        }
-        const radius = 50;
-        await Location.startGeofencingAsync('checkHomeTask', [
-            {
-              ...latLng,
-              radius
-            }
-          ]);
-        this._notificationSubscription = Notifications.addListener(this._handleNotification); 
-        this.props.navigation.navigate('App');
+          //await TaskManager.unregisterAllTasksAsync()       
+          this._notificationSubscription = Notifications.addListener(this._handleNotification);
+          const tasks=await TaskManager.getRegisteredTasksAsync();
+          console.log("tasksCDM",JSON.stringify(tasks));
+          this.props.navigation.navigate('App');
         }
       })
 
@@ -163,6 +188,7 @@ static getExpoPushToken=async()=>{
                         iconSize={theme.SIZES.BASE * 1.625}
                         color={nowTheme.COLORS.GOOGLE}
                         style={[styles.social, styles.shadow]}
+                        onPress={this.handleGoogleLogin}
                       />
                       <GaButton
                         round
@@ -248,7 +274,7 @@ static getExpoPushToken=async()=>{
                           </Block> */}
                         </Block>
                         <Block center>
-                          <Button round style={styles.createButton} onPress={this.handleSubmit}>
+                          <Button round style={styles.createButton} onPress={this.handleSubmitLogin}>
                             <Text
                               style={{ fontFamily: 'montserrat-bold' }}
                               size={14}
@@ -364,12 +390,15 @@ export default Login;
 TaskManager.defineTask('updateLoc', async({ data, error }) => {
   if (error) {
     // check `error.message` for more details.
+    alert("errorrrrrr"+error)
     return;
   }
+  try{
   const {locations}=data;
+  
+  console.log('Received new locations', locations[0]);
   const uid=await AsyncStorage.getItem('uid')
   console.log("uid"+uid)
-  console.log('Received new locations', locations[0]);
   await db.collection('users').doc(uid).update({
     "latitude":locations[0].coords.latitude,
     "longitude":locations[0].coords.longitude
@@ -404,19 +433,22 @@ TaskManager.defineTask('updateLoc', async({ data, error }) => {
           await soundObject.playAsync();     
     
       } catch (error) {
-          //console.log("error"+error);
+          alert("error"+error);
       }
     }
   })
-  
+}catch(error){
+  alert("error"+error);
+}
   
 });
 
-TaskManager.defineTask('checkHomeTask', async({ data: { eventType, region }, error }) => {
+TaskManager.defineTask('home', async({ data: { eventType, region }, error }) => {
   if (error) {
     // check `error.message` for more details.
     return;
   }
+  try{
   console.log(eventType);
   
   const token=await Login.getExpoPushToken()
@@ -480,4 +512,228 @@ TaskManager.defineTask('checkHomeTask', async({ data: { eventType, region }, err
       //console.log("error"+error);
   }
   }
+}catch(error){
+  alert("error"+error);
+}
 });
+
+TaskManager.defineTask('school', async({ data: { eventType, region }, error }) => {
+  if (error) {
+    alert(error)
+    return;
+  }
+  try{
+  console.log(eventType);
+  
+  const token=await Login.getExpoPushToken()
+  console.log("token"+JSON.stringify(token))
+  if (eventType === Location.GeofencingEventType.Enter) {    
+    console.log("You've entered school:", region);
+    const message = {
+      to: token,
+      sound: 'default',
+      title: 'Wecome!',
+      body: 'Remember to wash your hands before you meet your friends!',
+      data: { data: 'hands' },
+      _displayInForeground: true,
+    };
+    const response = await fetch('https://exp.host/--/api/v2/push/send', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-encoding': 'gzip, deflate',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(message),
+    });
+    try {
+    
+      let soundObject  = new Audio.Sound();
+      await soundObject.loadAsync(require('../assets/sounds/schoolhands.mp3'));
+      await soundObject.playAsync();     
+
+  } catch (error) {
+      //console.log("error"+error);
+  } 
+    
+    
+  } else if (eventType === Location.GeofencingEventType.Exit) {
+    console.log("You've left school:", region);
+    const message = {
+      to: token,
+      sound: 'default',
+      title: 'Finished School?',
+      body: 'Remember to wear a mask!',
+      data: { data: 'mask' },
+      _displayInForeground: true,
+    };
+    const response = await fetch('https://exp.host/--/api/v2/push/send', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-encoding': 'gzip, deflate',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(message),
+    });
+    try {
+    
+      let soundObject  = new Audio.Sound();
+      await soundObject.loadAsync(require('../assets/sounds/schoolmask.mp3'));
+      await soundObject.playAsync();        
+
+  } catch (error) {
+      //console.log("error"+error);
+  } 
+  }
+}catch(error){
+  alert("error"+error);
+}
+});
+TaskManager.defineTask('university', async({ data: { eventType, region }, error }) => {
+  if (error) {
+    alert(error)
+    return;
+  }
+  try{
+  console.log(eventType);
+  
+  const token=await Login.getExpoPushToken()
+  console.log("token"+JSON.stringify(token))
+  if (eventType === Location.GeofencingEventType.Enter) {    
+    console.log("You've entered university:", region);
+    const message = {
+      to: token,
+      sound: 'default',
+      title: 'Wecome!',
+      body: 'Remember to wash your hands before you see your maties!',
+      data: { data: 'hands' },
+      _displayInForeground: true,
+    };
+    const response = await fetch('https://exp.host/--/api/v2/push/send', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-encoding': 'gzip, deflate',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(message),
+    });
+    try {
+    
+      let soundObject  = new Audio.Sound();
+      await soundObject.loadAsync(require('../assets/sounds/unihands.mp3'));
+      await soundObject.playAsync();     
+
+  } catch (error) {
+      //console.log("error"+error);
+  } 
+    
+    
+  } else if (eventType === Location.GeofencingEventType.Exit) {
+    console.log("You've left uni:", region);
+    const message = {
+      to: token,
+      sound: 'default',
+      title: 'Finished Uni?',
+      body: 'Remember to wear a mask!',
+      data: { data: 'mask' },
+      _displayInForeground: true,
+    };
+    const response = await fetch('https://exp.host/--/api/v2/push/send', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-encoding': 'gzip, deflate',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(message),
+    });
+   try {
+    
+      let soundObject  = new Audio.Sound();
+      await soundObject.loadAsync(require('../assets/sounds/unimask.mp3'));
+      await soundObject.playAsync();        
+
+  } catch (error) {
+      //console.log("error"+error);
+  } 
+  }
+}catch(error){
+  alert("error"+error);
+}
+});
+TaskManager.defineTask('workplace', async({ data: { eventType, region }, error }) => {
+  if (error) {
+    alert(error)
+    return;
+  }
+  try{
+  console.log(eventType);
+  
+  const token=await Login.getExpoPushToken()
+  console.log("token"+JSON.stringify(token))
+  if (eventType === Location.GeofencingEventType.Enter) {    
+    console.log("You've entered work:", region);
+    const message = {
+      to: token,
+      sound: 'default',
+      title: 'Wecome!',
+      body: 'Remember to wash your hands before your work begins!',
+      data: { data: 'hands' },
+      _displayInForeground: true,
+    };
+    const response = await fetch('https://exp.host/--/api/v2/push/send', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-encoding': 'gzip, deflate',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(message),
+    });
+    try {
+    
+      let soundObject  = new Audio.Sound();
+      await soundObject.loadAsync(require('../assets/sounds/workhands.mp3'));
+      await soundObject.playAsync();     
+
+  } catch (error) {
+      //console.log("error"+error);
+  } 
+    
+    
+  } else if (eventType === Location.GeofencingEventType.Exit) {
+    console.log("You've left work:", region);
+    const message = {
+      to: token,
+      sound: 'default',
+      title: 'Finished Work?',
+      body: 'Remember to wear a mask!',
+      data: { data: 'mask' },
+      _displayInForeground: true,
+    };
+    const response = await fetch('https://exp.host/--/api/v2/push/send', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-encoding': 'gzip, deflate',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(message),
+    });
+    try {
+    
+      let soundObject  = new Audio.Sound();
+      await soundObject.loadAsync(require('../assets/sounds/workmask.mp3'));
+      await soundObject.playAsync();        
+
+  } catch (error) {
+      //console.log("error"+error);
+  } 
+  }
+}catch(error){
+  alert("error"+error);
+}
+});
+

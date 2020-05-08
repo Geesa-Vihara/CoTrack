@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, AsyncStorage } from 'react-native';
+import { Image, AsyncStorage,Platform } from 'react-native';
 import { AppLoading } from 'expo';
 import * as Font from 'expo-font';
 import { Asset } from 'expo-asset';
@@ -54,7 +54,7 @@ export default class App extends React.Component {
   state = {
     isLoadingComplete: false,
     fontLoaded: false,
-    expoPushToken: '',
+    //expoPushToken: '',
     notification: {}, 
     local_total_cases:0,
     global_total_cases:0,
@@ -63,22 +63,22 @@ export default class App extends React.Component {
     local_recovered:0,
   };
 
-  registerForPushNotificationsAsync = async () => {
+  allPermissions = async () => {
     if (Constants.isDevice) {
-      const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+      const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS,Permissions.LOCATION,Permissions.AUDIO_RECORDING);
       let finalStatus = existingStatus;
       if (existingStatus !== 'granted') {
-        const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+        const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS,Permissions.LOCATION,Permissions.AUDIO_RECORDING);
         finalStatus = status;
       }
       if (finalStatus !== 'granted') {
-        alert('Failed to get push token for push notification!');
+        alert('Please enable the required permissions!');
         return;
       }
-      token = await Notifications.getExpoPushTokenAsync();
+     /*  token = await Notifications.getExpoPushTokenAsync();
       console.log(token);
       this.setState({ expoPushToken: token });
-      await AsyncStorage.setItem("expoPushToken",token);
+      await AsyncStorage.setItem("expoPushToken",token); */
     } else {
       alert('Must use physical device for Push Notifications');
     }
@@ -93,16 +93,6 @@ export default class App extends React.Component {
     }
   };
 
-  async getLocationAsync (){
-    let { status } = await Location.requestPermissionsAsync();
-    if (status !== 'granted') {
-      this.setState({
-        locationResult: 'Permission to access location was denied',
-      });
-    } else {
-      this.setState({ hasLocationPermissions: true });
-    }
-   }
    async newsFetch(){
 
    
@@ -138,9 +128,8 @@ export default class App extends React.Component {
   
   async componentDidMount() {     
     console.log("app")
-    await Font.loadAsync({ 'montserrat-regular': require('./assets/font/Montserrat-Regular.ttf'), 'montserrat-bold': require('./assets/font/Montserrat-Bold.ttf') } ); this.setState({fontLoaded: true, isLoadingComplete: true}); 
-    this.registerForPushNotificationsAsync();
-    this.getLocationAsync();  
+    await Font.loadAsync({ 'montserrat-regular': require('./assets/font/Montserrat-Regular.ttf'), 'montserrat-bold': require('./assets/font/Montserrat-Bold.ttf') } ); this.setState({fontLoaded: true, isLoadingComplete: true});
+    this.allPermissions();
     this.newsFetch();
   }
 

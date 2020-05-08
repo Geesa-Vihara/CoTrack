@@ -1,6 +1,6 @@
 import * as React from "react";
 import { StyleSheet, View, ScrollView, Dimensions, Image } from "react-native";
-import { Button, Text, theme } from 'galio-framework';
+import { Button, Text, theme, Block } from 'galio-framework';
 import { nowTheme } from '../constants/';
 
 const images = [
@@ -107,27 +107,28 @@ export default class handWash extends React.Component {
                 ))}
                 </View>        
             </View>
-      {this.state.timer===20?
-          <Button
-          shadowless
-          style={styles.button}
-          color={nowTheme.COLORS.PRIMARY}
-          onPress={this.startTimer}
-      >
-          <Text
-          style={{ fontFamily: 'montserrat-bold', fontSize: 14 }}
-          color={theme.COLORS.WHITE}
-          >
-          START 20 SECONDS!
-          </Text>
-      </Button>
+            <Block center>
+              {this.state.timer===20?
+                <Button
+                  shadowless
+                  style={styles.button}
+                  color={nowTheme.COLORS.PRIMARY}
+                  onPress={this.startTimer}
+                >
+                <Text
+                  style={{ fontFamily: 'montserrat-bold', fontSize: 14 }}
+                  color={theme.COLORS.WHITE}
+                >
+                  START 20 SECONDS!
+                </Text>
+              </Button>:<Text></Text>}
+              <Text style={{fontSize: 100, color: '#000'}}>
+                  {this.state.timer === 0 ?<Text style={{fontSize:50}}>Times Up!</Text>:this.state.timer.toString().length == 1?"00:0"+this.state.timer:"00:"+this.state.timer} 
+              </Text>
+          </Block>
       
-      
-      :<Text></Text>}
           
-        <Text style={{fontSize: 100, color: '#000',marginLeft:theme.SIZES.BASE*5}}>
-            {this.state.timer === 0 ?<Text style={{fontSize:50}}>Times Up!</Text>:this.state.timer.toString().length == 1?"00:0"+this.state.timer:"00:"+this.state.timer} 
-        </Text>
+        
       
     </View>
      
@@ -143,7 +144,7 @@ const styles = StyleSheet.create({
     shadowRadius: 0,
     shadowOpacity: 0,
     marginTop: 15, 
-    marginLeft:theme.SIZES.BASE
+    //marginLeft:theme.SIZES.BASE
         },
   backgroundImage: {
     height: "100%",

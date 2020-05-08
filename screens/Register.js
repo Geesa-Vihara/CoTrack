@@ -5,13 +5,16 @@ import {
   Dimensions,
   StatusBar,
   TouchableWithoutFeedback,
-  Keyboard
+  Keyboard,
+  AsyncStorage
 } from 'react-native';
 import { Block, Checkbox, Text, Button as GaButton, theme } from 'galio-framework';
 
 import { Button, Icon, Input } from '../components';
 import { Images, nowTheme } from '../constants';
-import { signUp } from "../actions/auth.js";
+import { signUp,logout } from "../actions/auth.js";
+import * as Location from 'expo-location';
+import { Notifications } from 'expo';
 
 const { width, height } = Dimensions.get('screen');
 
@@ -29,16 +32,29 @@ class Register extends React.Component {
 
   handleChange = (name, value) => {
     this.setState({ [name]: value });
-    console.log(this.state)
   }
 
-  handleSubmit = () => {
+  handleSubmit = async() => {
     var res = false
     console.log('state',this.state);
-    res = signUp(this.state);
-    // if(res){
-    //   this.props.navigation.navigate('App');
-    // }
+    try{
+      res = await signUp(this.state);
+      if(res){  
+        const token = await Notifications.getExpoPushTokenAsync();
+        console.log(token);
+        await AsyncStorage.setItem("expoPushToken",token);
+        await Location.startLocationUpdatesAsync('updateLoc', {
+          accuracy: Location.Accuracy.BestForNavigation
+          });        
+        console.log("res"+res);
+    }
+    }
+    catch (error) {
+      console.log('error', error);
+      alert(error);
+  }
+    
+    
   }
 
   render() {
