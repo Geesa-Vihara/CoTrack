@@ -40,7 +40,7 @@ class Card extends React.Component {
           <Block flex space="between" style={styles.cardDescription}>
             <Block flex>
               <Text
-                style={{ fontFamily: 'montserrat-regular' }}
+                style={{ fontFamily: 'montserrat-regular'}}
                 size={14}
                 style={titleStyles}
                 color={nowTheme.COLORS.SECONDARY}
@@ -63,9 +63,9 @@ class Card extends React.Component {
               {item.description ? (
                 <Block flex center>
                   <Text
-                    style={{ fontFamily: 'montserrat-regular', textAlign: 'center', padding: 15 }}
-                    size={14}
-                    color={"#9A9A9A"}
+                    style={{ fontFamily: 'montserrat-regular', textAlign: 'center', padding: 15,fontWeight:"bold" }}
+                    size={50}
+                    color={"orange"}
                   >
                     {item.description}
                   </Text>
@@ -127,7 +127,8 @@ const styles = StyleSheet.create({
   cardTitle: {
     paddingHorizontal: 9,
     paddingTop: 7,
-    paddingBottom: 15
+    paddingBottom: 15,
+    textAlign:'center'
   },
   cardDescription: {
     padding: theme.SIZES.BASE / 2
