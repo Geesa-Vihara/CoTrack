@@ -1,10 +1,9 @@
 import React from "react";
-import { StyleSheet, Dimensions, ScrollView } from "react-native";
+import { StyleSheet, Dimensions, ScrollView} from "react-native";
 import { Block, theme, Text } from "galio-framework";
 
 import { Card, Button } from "../components";
-import articles from "../constants/articles";
-const { width } = Dimensions.get("screen");
+const { width } = Dimensions.get('screen');
 
 class Home extends React.Component {
 
@@ -30,7 +29,7 @@ class Home extends React.Component {
             <Card
               item={{
                 title: 'Total Confirmed Cases',
-                image: require("../assets/imgs/hospital.jpg"),
+                image: require("../assets/imgs/ac.jpg"),
                 description: `${this.state.local_total_cases}`
               }}
               style={{ marginRight: theme.SIZES.BASE}}
@@ -40,7 +39,7 @@ class Home extends React.Component {
             {/* <Text>{this.state.local_total_cases}</Text> */}
             <Card item={{
                 title: 'Active Cases',
-                image: require("../assets/imgs/bed.jpg"),       
+                image: require("../assets/imgs/active.jpg"),       
                 description: `${this.state.local_active_cases}`
             }} />
 
@@ -49,14 +48,14 @@ class Home extends React.Component {
             <Card
               item={{
                 title: 'New Cases',
-                image: require("../assets/imgs/ambulance.jpg"),
+                image: require("../assets/imgs/tcc.jpg"),
                 description: `${this.state.local_new_cases}`
               }}
               style={{ marginRight: theme.SIZES.BASE }}
             />
             <Card item={{
                 title: 'Under investigations',
-                image: require("../assets/imgs/cross.jpg"),
+                image: require("../assets/imgs/ui.jpg"),
                 description: `${this.state.local_total_number_of_individuals_in_hospitals}`
             }} />
           </Block>
@@ -64,7 +63,7 @@ class Home extends React.Component {
             <Card
               item={{
                 title: 'Recovered',
-                image: require("../assets/imgs/clap.jpg"),
+                image: require("../assets/imgs/rec.jpg"),
                 description: `${this.state.local_recovered}`
               }}
               style={{ marginRight: theme.SIZES.BASE }}
