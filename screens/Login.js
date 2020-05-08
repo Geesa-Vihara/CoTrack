@@ -150,7 +150,6 @@ static getExpoPushToken=async()=>{
               <Block style={styles.loginContainer}>
                 <Block flex space="evenly">
                   <Block flex={0.4} middle style={styles.socialConnect}>
-                    <Block flex={0.5} middle style={{ marginTop:18, marginBottom: 18 }}>
                       <Text
                         style={{
                           fontFamily: 'montserrat-regular',
@@ -163,7 +162,6 @@ static getExpoPushToken=async()=>{
                       >
                         Login
                       </Text>
-                    </Block>
 
                     <Block flex={0.5} row middle space="between" style={{ marginTop:18, marginBottom: 28 }}>
                       <GaButton

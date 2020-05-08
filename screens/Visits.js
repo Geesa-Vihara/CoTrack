@@ -122,7 +122,6 @@ class Visits extends React.Component {
             <Block flex middle>
               <Block style={styles.visitsContainer}>
                 <Block flex space="evenly">
-                  <Block flex={0.1} middle style={styles.socialConnect}>
                     <Block flex={0.1} middle>
                       <Text
                         style={{
@@ -135,8 +134,7 @@ class Visits extends React.Component {
                         Add your frequent visits
                       </Text>
                     </Block>
-                  </Block>
-                  <Block flex={0.1}>
+                  <Block flex={0.1}>                  
                     <Text
                       style={{
                         fontFamily: 'montserrat-regular',
@@ -148,19 +146,13 @@ class Visits extends React.Component {
                       Set where you are most likely to spend your time!
                     </Text>
                   </Block>
-                  <Block flex={1} middle space="between">
-                    <Block center >
-                      <Block flex space="between">
-                        <Block>
-                          <Block width={width * 0.8} style={styles.visitsInput}>
-                            <Picker  style={{ height: 20, width: 200 }} selectedValue = {this.state.place} onValueChange = {this.setSelectedValue}>
-                                    <Picker.Item label="Home" value="home" />                                
-                                    <Picker.Item label="School" value="school" />                                
-                                    <Picker.Item label="University" value="university" />
-                                    <Picker.Item label="Workplace" value="workplace" />  
-                                    
-                            </Picker>                            
-                          </Block> 
+                      <Picker selectedValue = {this.state.place} onValueChange = {this.setSelectedValue}>
+                                  <Picker.Item label="Home" value="home" />                                
+                                  <Picker.Item label="School" value="school" />                                
+                                  <Picker.Item label="University" value="university" />
+                                  <Picker.Item label="Workplace" value="workplace" />
+                              </Picker>                                                        
+                                                 
                           <MapView
                             style={{
                             flex: 1
@@ -187,11 +179,7 @@ class Visits extends React.Component {
                                 Done
                                 </Text>
                             </Button> 
-                           </Block>                                                                          
-                        </Block>
-                      </Block>
-                    </Block>
-                  </Block>
+                           </Block>
                 </Block>
               </Block>
             </Block>

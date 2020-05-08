@@ -96,6 +96,7 @@ export const logout = async function logout() {
         }              
         await AsyncStorage.removeItem('uid');
         await AsyncStorage.removeItem('expoPushToken');
+        await Location.stopLocationUpdatesAsync('updateLoc');
         return true
     } catch (error) {
         console.log('errortyty',error);
