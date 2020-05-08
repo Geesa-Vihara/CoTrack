@@ -26,7 +26,7 @@ function CustomDrawerContent({
 }) {
   const insets = useSafeArea();
   const screens = [
-    "Home",
+    "Dashboard",
     //"Components",
     "Meal TimePicker",
     //"Articles",

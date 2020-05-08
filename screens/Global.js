@@ -26,7 +26,7 @@ class Global extends React.Component {
         <Block flex row>
             <Card
               item={{
-                title: 'Total Confirmed Cases',
+                title: 'Total Cases',
                 image: require("../assets/imgs/ac.jpg"),
                 description: `${this.state.global_total_cases}`
               }}

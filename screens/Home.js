@@ -28,7 +28,7 @@ class Home extends React.Component {
         <Block flex row>
             <Card
               item={{
-                title: 'Total Confirmed Cases',
+                title: 'Total Cases',
                 image: require("../assets/imgs/ac.jpg"),
                 description: `${this.state.local_total_cases}`
               }}
@@ -54,7 +54,7 @@ class Home extends React.Component {
               style={{ marginRight: theme.SIZES.BASE }}
             />
             <Card item={{
-                title: 'Under investigations',
+                title: 'Investigations',
                 image: require("../assets/imgs/ui.jpg"),
                 description: `${this.state.local_total_number_of_individuals_in_hospitals}`
             }} />

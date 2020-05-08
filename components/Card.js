@@ -65,7 +65,7 @@ class Card extends React.Component {
                   <Text
                     style={{ fontFamily: 'montserrat-regular', textAlign: 'center', padding: 15,fontWeight:"bold" }}
                     size={50}
-                    color={"orange"}
+                    color={"#ff7f27"}
                   >
                     {item.description}
                   </Text>
