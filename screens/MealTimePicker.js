@@ -10,7 +10,7 @@ import {
   Alert 
 } from 'react-native';
 import { Block, Checkbox, Text, Button as GaButton, theme } from 'galio-framework';
-import { Picker } from "react-native";
+import { ScrollView, SafeAreaView } from "react-native";
 
 //import TimePicker from 'react-native-simple-time-picker';
 import TimePicker from '../components/TimePicker';
@@ -183,13 +183,6 @@ class MealTimePicker extends React.Component {
   }
 
   render() {
-    console.log(this.state)
-    const items = [];
-    for (let i = 0; i <= 59 ; i++) {
-      items.push(
-        <Picker.Item key={i} value={i} label={`${i.toString()}`} />,
-      );
-    }
     return (
       <DismissKeyboard>
         <Block flex middle>
@@ -202,7 +195,7 @@ class MealTimePicker extends React.Component {
               <Block style={styles.timepickerContainer}>
                 <Block flex space="evenly">
                   <Block flex={0.2} middle style={styles.socialConnect}>
-                    <Block flex={0.1} middle>
+                    <Block flex={1} middle>
                       <Text
                         style={{
                           fontFamily: 'montserrat-regular',
@@ -227,6 +220,8 @@ class MealTimePicker extends React.Component {
                       Set the time you have your breakfast, lunch and dinner
                     </Text>
                   </Block>
+                  <SafeAreaView style={{flex:1}}>
+                  <ScrollView>
                   <Block flex={1} middle space="between">
                     <Block center flex={0.5}>
                       <Block flex space="between">
@@ -240,13 +235,6 @@ class MealTimePicker extends React.Component {
                             >
                             Breakfast Time
                             </Text>
-                            {/* <Picker
-                              selectedValue={0}
-                              style={{ height: 50, width: 150 }}
-                              onValueChange={(itemValue, itemIndex) => console.log(itemValue)}
-                            >
-                              {items}
-                            </Picker> */}
                             <TimePicker
                               selectedHours={this.state.breakfastHour}
                               selectedMinutes={this.state.breakfastMinutes}
@@ -298,6 +286,8 @@ class MealTimePicker extends React.Component {
                       </Block>
                     </Block>
                   </Block>
+                  </ScrollView>
+                </SafeAreaView>
                 </Block>
               </Block>
             </Block>

@@ -62,41 +62,41 @@ class Login extends React.Component {
     this.setState({ expoPushToken: token });
     await AsyncStorage.setItem("expoPushToken",token);
     if(status){ 
-            /* await Location.startLocationUpdatesAsync('updateLoc', {
-              accuracy: Location.Accuracy.High,
-              timeInterval: 2500,
-              distanceInterval: 5,
-              showsBackgroundLocationIndicator: false,
-              pausesUpdatesAutomatically :true,
-              activityType: Location.ActivityType.Fitness
-          }); */
-          await Location.startLocationUpdatesAsync('updateLoc', {
-            accuracy: Location.Accuracy.BestForNavigation
-          });
-            const uid=await AsyncStorage.getItem('uid');
-            const doc=await db.collection('crowdcount').doc(uid).get();
-            const data=doc.data();          
-            const radius = 50;
-            if(data.places){
-              Object.keys(data.places).map(async(place,index) => { 
-                const base=data.places;
-                const placeLng={
-                  latitude:base[place]["latitude"],
-                  longitude:base[place]["longitude"],
-                }
-                  await Location.startGeofencingAsync(place, [
-                    {
-                      ...placeLng,
-                      radius
-                    }
-                  ]);
-                  console.log(place,placeLng);
-              })
-            }
-            const tasks=await TaskManager.getRegisteredTasksAsync();
-            console.log("tasksOS",JSON.stringify(tasks));
-            this.props.navigation.navigate('App');
-            }
+      /* await Location.startLocationUpdatesAsync('updateLoc', {
+        accuracy: Location.Accuracy.High,
+        timeInterval: 2500,
+        distanceInterval: 5,
+        showsBackgroundLocationIndicator: false,
+        pausesUpdatesAutomatically :true,
+        activityType: Location.ActivityType.Fitness
+      }); */
+      await Location.startLocationUpdatesAsync('updateLoc', {
+        accuracy: Location.Accuracy.BestForNavigation
+      });
+      const uid=await AsyncStorage.getItem('uid');
+      const doc=await db.collection('crowdcount').doc(uid).get();
+      const data=doc.data();          
+      const radius = 50;
+      if(data.places){
+        Object.keys(data.places).map(async(place,index) => { 
+          const base=data.places;
+          const placeLng={
+            latitude:base[place]["latitude"],
+            longitude:base[place]["longitude"],
+          }
+            await Location.startGeofencingAsync(place, [
+              {
+                ...placeLng,
+                radius
+              }
+            ]);
+            console.log(place,placeLng);
+        })
+      }
+      const tasks=await TaskManager.getRegisteredTasksAsync();
+      console.log("tasksOS",JSON.stringify(tasks));
+      this.props.navigation.navigate('App');
+    }
   }
   componentDidMount = async() => {
       
@@ -105,6 +105,8 @@ class Login extends React.Component {
       Firebase.auth().onAuthStateChanged(async(user) => {
 
         if (user) {
+          this.setState({password:""})
+          console.log(this.state)
           //await TaskManager.unregisterAllTasksAsync()       
           this._notificationSubscription = Notifications.addListener(this._handleNotification);
           const tasks=await TaskManager.getRegisteredTasksAsync();
