@@ -98,6 +98,9 @@ export default class App extends React.Component {
   }
 
   render() {
+    //to disable warnings
+    console.disableYellowBox = true;
+    
     if (!this.state.isLoadingComplete) {
       return (
         <AppLoading
