@@ -7,7 +7,8 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Vibration,
-  Alert 
+  Alert, 
+  Platform
 } from 'react-native';
 import { Block, Checkbox, Text, Button as GaButton, theme } from 'galio-framework';
 import { ScrollView, SafeAreaView } from "react-native";
@@ -19,7 +20,7 @@ import moment from 'moment';
 import { Button, Icon, Input } from '../components';
 import { Images, nowTheme } from '../constants';
 import { setMealTimes, getMealTimes } from "../actions/database.js";
-import { Notifications } from 'expo';
+import { Notifications, AuthSession } from 'expo';
 import { Audio } from 'expo-av';
 
 const { width, height } = Dimensions.get('screen');
@@ -185,16 +186,18 @@ class MealTimePicker extends React.Component {
   render() {
     return (
       <DismissKeyboard>
-        <Block flex middle>
+        {/* <Block flex={1} middle> */}
           <ImageBackground
             source={Images.RegisterBackground}
             style={styles.imageBackgroundContainer}
             imageStyle={styles.imageBackground}
           >
-            <Block flex middle>
+          <SafeAreaView style={{flex:1}}>
+          <ScrollView >
+            <Block flex={1} middle style={{height:Platform.OS=='ios' ? 1100 : height*0.8}}>
               <Block style={styles.timepickerContainer}>
                 <Block flex space="evenly">
-                  <Block flex={0.2} middle style={styles.socialConnect}>
+                  <Block flex={0.07} middle style={styles.socialConnect}>
                     <Block flex={1} middle>
                       <Text
                         style={{
@@ -208,7 +211,7 @@ class MealTimePicker extends React.Component {
                       </Text>
                     </Block>
                   </Block>
-                  <Block flex={0.1}>
+                  <Block flex={0.07}>
                     <Text
                       style={{
                         fontFamily: 'montserrat-regular',
@@ -220,10 +223,8 @@ class MealTimePicker extends React.Component {
                       Set the time you have your main meals
                     </Text>
                   </Block>
-                  <SafeAreaView style={{flex:1}}>
-                  <ScrollView>
                   <Block flex={1} middle space="between">
-                    <Block center flex={1}>
+                    <Block center flex={0.5}>
                       <Block flex space="between">
                         <Block>
                           <Block width={width * 0.8} style={styles.timepickerInput}>
@@ -271,8 +272,7 @@ class MealTimePicker extends React.Component {
                               onChange={(selectedHours,selectedMinutes) => this.handleChange('dinnerHour','dinnerMinutes',selectedHours,selectedMinutes)}
                             />
                           </Block>
-                        </Block>
-                        <Block center>
+                          <Block center>
                           <Button round style={styles.createButton} onPress={this.handleSubmit}>
                             <Text
                               style={{ fontFamily: 'montserrat-bold' }}
@@ -283,16 +283,17 @@ class MealTimePicker extends React.Component {
                             </Text>
                           </Button>
                         </Block>
+                        </Block>
                       </Block>
                     </Block>
                   </Block>
-                  </ScrollView>
-                </SafeAreaView>
                 </Block>
               </Block>
             </Block>
+            </ScrollView>
+            </SafeAreaView>
           </ImageBackground>
-        </Block>
+        {/* </Block> */}
       </DismissKeyboard>
     );
   }
@@ -311,8 +312,9 @@ const styles = StyleSheet.create({
   },
   timepickerContainer: {
     marginTop: 55,
-    marginBottom: 55,
+    //marginBottom: 55,
     width: width * 0.9,
+    flex:1,
     height: height < 812 ? height * 0.8 : height * 0.8,
     backgroundColor: nowTheme.COLORS.WHITE,
     borderRadius: 4,
