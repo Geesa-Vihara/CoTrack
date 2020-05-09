@@ -98,19 +98,17 @@ class Login extends React.Component {
       this.props.navigation.navigate('App');
     }
   }
-  componentDidMount = async() => {
-      
-      this.setState({emai:'',password:''});
+  componentDidMount = async() => { 
     try {
       Firebase.auth().onAuthStateChanged(async(user) => {
 
         if (user) {
-          this.setState({password:""})
-          console.log(this.state)
           //await TaskManager.unregisterAllTasksAsync()       
           this._notificationSubscription = Notifications.addListener(this._handleNotification);
           const tasks=await TaskManager.getRegisteredTasksAsync();
           console.log("tasksCDM",JSON.stringify(tasks));
+          this.setState({password:""})
+          console.log(this.state)
           this.props.navigation.navigate('App');
         }
       })
@@ -242,6 +240,7 @@ static getExpoPushToken=async()=>{
                               placeholder="Password"
                               style={styles.inputs}
                               onChangeText={text => this.handleChange('password', text)}
+                              value={this.state.password}
                               iconContent={
                                 <Icon
                                   size={16}
