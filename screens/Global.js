@@ -13,6 +13,7 @@ class Global extends React.Component {
    global_deaths:0,
    global_recovered:0,
    global_new_deaths:0,
+   total_pcr_testing_count:0,
  };
   
   renderArticles = () => {
@@ -67,6 +68,22 @@ class Global extends React.Component {
             }} />
          
          </Block>
+         <Block flex row>
+          <Card item={{
+                 title: 'New Deaths',
+                 image: require("../assets/imgs/new.jpg"),
+                 description: `${this.state.global_new_deaths}`
+            }} />
+         
+         </Block>
+         <Block flex row>
+          <Card item={{
+                 title: 'Total PCR testing',
+                 image: require("../assets/imgs/pcr.jpg"),
+                 description: `${this.state.total_pcr_testing_count}`
+            }} />
+         
+         </Block>
        
         </Block>
       </ScrollView>
@@ -93,7 +110,7 @@ class Global extends React.Component {
         global_new_cases : data.data.global_new_cases,
         global_recovered : data.data.global_recovered,
         global_new_deaths : data.data.global_new_deaths,
-        local_total_number_of_individuals_in_hospitals : data.data.local_total_number_of_individuals_in_hospitals,
+        total_pcr_testing_count: data.data.total_pcr_testing_count,
         isLoading: false,
         
         });
