@@ -194,7 +194,7 @@ class MealTimePicker extends React.Component {
             <Block flex middle>
               <Block style={styles.timepickerContainer}>
                 <Block flex space="evenly">
-                  <Block flex={0.2} middle style={styles.socialConnect}>
+                  <Block flex={0.07} middle style={styles.socialConnect}>
                     <Block flex={1} middle>
                       <Text
                         style={{
@@ -208,7 +208,7 @@ class MealTimePicker extends React.Component {
                       </Text>
                     </Block>
                   </Block>
-                  <Block flex={0.1}>
+                  <Block flex={0.07}>
                     <Text
                       style={{
                         fontFamily: 'montserrat-regular',
