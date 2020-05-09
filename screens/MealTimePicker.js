@@ -202,28 +202,28 @@ class MealTimePicker extends React.Component {
                           textAlign: 'center'
                         }}
                         color="#333"
-                        size={24}
+                        size={20}
                       >
                         Pick Your Meal Times
                       </Text>
                     </Block>
                   </Block>
-                  <Block flex={0.2}>
+                  <Block flex={0.1}>
                     <Text
                       style={{
                         fontFamily: 'montserrat-regular',
                         textAlign: 'center'
                       }}
                       muted
-                      size={16}
+                      size={14}
                     >
-                      Set the time you have your breakfast, lunch and dinner
+                      Set the time you have your main meals
                     </Text>
                   </Block>
                   <SafeAreaView style={{flex:1}}>
                   <ScrollView>
                   <Block flex={1} middle space="between">
-                    <Block center flex={0.5}>
+                    <Block center flex={1}>
                       <Block flex space="between">
                         <Block>
                           <Block width={width * 0.8} style={styles.timepickerInput}>
@@ -231,7 +231,7 @@ class MealTimePicker extends React.Component {
                               fontFamily: 'montserrat-regular',
                               textAlign: 'center'
                             }}
-                            size={16}
+                            size={12}
                             >
                             Breakfast Time
                             </Text>
@@ -246,7 +246,7 @@ class MealTimePicker extends React.Component {
                               fontFamily: 'montserrat-regular',
                               textAlign: 'center'
                             }}
-                            size={16}
+                            size={12}
                             >
                             Lunch Time
                             </Text>
@@ -261,7 +261,7 @@ class MealTimePicker extends React.Component {
                               fontFamily: 'montserrat-regular',
                               textAlign: 'center'
                             }}
-                            size={16}
+                            size={12}
                             >
                             Dinner Time
                             </Text>
@@ -377,12 +377,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 10
   },
   timepickerInput: { 
-    paddingVertical: 6, 
+    paddingVertical: 3, 
     paddingHorizontal: 80, 
-    borderWidth: 1, 
+    borderWidth: 0.5, 
     borderColor: 'grey', 
-    borderRadius: 10,
-    marginBottom: 10,
+    borderRadius: 40,
+    marginBottom: 3,
     justifyContent: 'center', 
   }
 });
