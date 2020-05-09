@@ -194,7 +194,7 @@ class MealTimePicker extends React.Component {
           >
           <SafeAreaView style={{flex:1}}>
           <ScrollView >
-            <Block flex={1} middle style={{height:Platform.OS=='ios' ? 1100 : height}}>
+            <Block flex={1} middle style={{height:Platform.OS=='ios' ? 1100 : height*0.8}}>
               <Block style={styles.timepickerContainer}>
                 <Block flex space="evenly">
                   <Block flex={0.07} middle style={styles.socialConnect}>
