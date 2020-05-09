@@ -71,7 +71,7 @@ class Global extends React.Component {
          <Block flex row>
           <Card item={{
                  title: 'New Deaths',
-                 image: require("../assets/imgs/dead.jpg"),
+                 image: require("../assets/imgs/new.jpg"),
                  description: `${this.state.global_new_deaths}`
             }} />
          
@@ -79,7 +79,7 @@ class Global extends React.Component {
          <Block flex row>
           <Card item={{
                  title: 'Total PCR testing',
-                 image: require("../assets/imgs/dead.jpg"),
+                 image: require("../assets/imgs/pcr.jpg"),
                  description: `${this.state.total_pcr_testing_count}`
             }} />
          
