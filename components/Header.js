@@ -41,6 +41,37 @@ const BasketButton = ({ isWhite, style, navigation }) => (
 
 
 class Header extends React.Component {
+  state={
+       button_1 : false,
+        button_2 : false,
+};
+  constructor(props){
+    super(props);
+      this.state={
+        button_1 : true,
+        button_2 : false,
+       
+      }}
+
+      onPressG=()=>{
+        this.setState({
+          button_1: false,
+          button_2: true,
+          color1 : 'white',
+          color2:'red'
+         
+            });
+      }
+      onPressL=()=>{
+        this.setState({
+          button_1: true,
+          button_2: false,
+          color1 : 'red',
+          color2 :'white'
+       
+            });
+      }
+  
   handleLeftPress = () => {
     const { back, navigation } = this.props;
     return back ? navigation.goBack() : navigation.openDrawer();
@@ -123,14 +154,22 @@ class Header extends React.Component {
     );
   };
   renderOptions = () => {
-    const { navigation, optionLeft, optionRight } = this.props;
+    const { navigation, optionLeft, optionRight ,title,transparent} = this.props;
+   
 
     return (
       <Block row style={styles.options}>
-        <Button
+        <TouchableOpacity
           shadowless
-          style={[styles.tab, styles.divider]}
-          onPress={() => navigation.navigate('Dashboard')}
+          style={{ borderColor: this.state.button_1 ? nowTheme.COLORS.PRIMARY : 'white', padding: 15, width: width * 0.4,borderWidth:5}}
+          onPress={() => {
+            navigation.navigate('Dashboard');
+          }}
+          onPressIn={()=>{
+            () => {
+             this.onPressL();
+           }
+          }}
         >
           <Block row middle>
             <Icon
@@ -144,8 +183,18 @@ class Header extends React.Component {
               {optionLeft || 'Local'}
             </Text>
           </Block>
-        </Button>
-        <Button shadowless style={styles.tab} onPress={() => navigation.navigate('Global')}>
+        </TouchableOpacity>
+        <TouchableOpacity shadowless 
+         style={{ borderColor: this.state.button_2 ? nowTheme.COLORS.PRIMARY : 'white', padding: 15, width: width * 0.4,borderWidth:5}}
+        onPress={() =>{
+
+         navigation.navigate('Global');
+        }}
+        onPressIn={
+          () => {
+           this.onPressG();
+         }
+        }>
           <Block row middle>
             <Icon
               size={18}
@@ -158,7 +207,7 @@ class Header extends React.Component {
               {optionRight || 'Global'}
             </Text>
           </Block>
-        </Button>
+        </TouchableOpacity>
       </Block>
     );
   };
@@ -194,6 +243,7 @@ class Header extends React.Component {
       back,
       title,
       white,
+      red,
       transparent,
       bgColor,
       iconColor,
@@ -225,13 +275,13 @@ class Header extends React.Component {
               family="NowExtra"
               size={16}
               onPress={this.handleLeftPress}
-              color={iconColor || (white ? nowTheme.COLORS.WHITE : nowTheme.COLORS.ICON)}
+              color={iconColor || (white ? nowTheme.COLORS.BLACK : nowTheme.COLORS.ICON)}
             />
           }
           leftStyle={{ paddingVertical: 12, flex: 0.2 }}
           titleStyle={[
             styles.title,
-            { color: nowTheme.COLORS[white ? 'WHITE' : 'HEADER'] },
+            { color: nowTheme.COLORS[white ? 'BLACK' : 'HEADER'] },
             titleColor && { color: titleColor }
           ]}
           {...props}
@@ -260,7 +310,15 @@ const styles = StyleSheet.create({
     zIndex: 5
   },
   shadow: {
-    backgroundColor: theme.COLORS.WHITE,
+    backgroundColor: nowTheme.COLORS.WHITE,
+    shadowColor: 'black',
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 6,
+    shadowOpacity: 0.2,
+    elevation: 3
+  },
+  click: {
+    backgroundColor: nowTheme.COLORS.PRIMARY,
     shadowColor: 'black',
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 6,
@@ -277,7 +335,7 @@ const styles = StyleSheet.create({
     right: 12
   },
   header: {
-    backgroundColor: theme.COLORS.WHITE
+    borderColor: nowTheme.COLORS.BLACK
   },
   divider: {
     borderRightWidth: 0.3,
@@ -299,10 +357,11 @@ const styles = StyleSheet.create({
   tab: {
     backgroundColor: theme.COLORS.TRANSPARENT,
     width: width * 0.35,
-    borderRadius: 0,
-    borderWidth: 0,
+    borderRadius: 5,
+    borderWidth: 5,
     height: 24,
-    elevation: 0
+    elevation: 0,
+    borderColor: nowTheme.COLORS.PRIMARY
   },
   tabTitle: {
     lineHeight: 19,
@@ -314,6 +373,23 @@ const styles = StyleSheet.create({
     height: theme.SIZES.BASE * 3.5,
     borderRadius: theme.SIZES.BASE * 1.75,
     justifyContent: 'center'
+  },
+  red: {
+    backgroundColor: theme.COLORS.PRIMARY,
+    width: width * 0.35,
+    borderRadius: 0,
+    borderWidth: 0,
+    height: 24,
+    elevation: 0
+  },
+  buttonL: {
+  
+    backgroundColor: theme.COLORS.white,
+    width: width * 0.35,
+    borderRadius: 0,
+    borderWidth: 0,
+    height: 24,
+    elevation: 0
   },
 });
 
