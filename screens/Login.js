@@ -7,7 +7,9 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   AsyncStorage,
-  Vibration
+  Vibration,
+  Alert,
+  Image
 } from 'react-native';
 import { Block, Checkbox, Text, Button as GaButton, theme } from 'galio-framework';
 import * as TaskManager from 'expo-task-manager';
@@ -19,29 +21,188 @@ const { width, height } = Dimensions.get('screen');
 
 import Firebase from "../config/firebase"
 import { login, getAuthState, signInGoogle } from "../actions/auth.js";
+import PushNotification from 'react-native-push-notification'
 
-import { Notifications } from 'expo';
-import { Audio } from 'expo-av';
 
-Audio.setAudioModeAsync({
-  staysActiveInBackground:true,
-  allowsRecordingIOS: false,
-  interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
-  playsInSilentModeIOS: true,
-  shouldDuckAndroid: true,
-  interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
-});
 
 const DismissKeyboard = ({ children }) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>{children}</TouchableWithoutFeedback>
 );
 
 class Login extends React.Component {
-  state = {
+  constructor(props){
+    super(props);
+    this.state = {
     email: '',
     password: '',
-    notification: {},
-    expoPushToken: '',
+  }
+  this.handleNotification = this.handleNotification.bind(this);
+
+}
+
+handleNotification=(notification)=>{
+  console.log('LOCAL NOTIFICATION login==>', notification);
+  if(notification.title=="Welcome Home!"||notification.title=="Welcome!"||notification.title=="It's breakfast time!"||notification.title=="It's lunch time!"||notification.title=="It's dinner time!"){    
+    this.props.navigation.navigate('HandWash');  
+  }else if(notification.title=="Going Outside!"||notification.title=="Finished School!"||notification.title=="Finished Uni!"||notification.title=="Finished Work!"){
+    this.props.navigation.navigate('PutMask');
+  }  
+};
+
+  static geoNotification = async() => {  
+    PushNotification.localNotificationSchedule({
+      //... You can use all the options from localNotifications
+      title:
+      "Be Aware!",
+      message: "You are in a crowded place, make sure to keep your distance!", // (required)
+      date: new Date(Date.now() + 1 * 1000), // in 60 secs
+      vibrate: true,
+      vibration: 300,
+      playSound: true,
+      soundName: 'beaware.mp3'
+    });
+   
+  }
+
+  static homeNotification = async() => {  
+    PushNotification.localNotificationSchedule({
+      //... You can use all the options from localNotifications
+      title:
+      "Welcome Home!",
+      message: "Remember to wash your hands before you see your loved ones!", // (required)
+      date: new Date(Date.now() + 1 * 1000), // in 60 secs
+      vibrate: true,
+      vibration: 300,
+      playSound: true,
+      soundName: 'handsfemale.mp3'
+    });
+   
+  }
+
+  static homeLeftNotification = async() => {  
+    PushNotification.localNotificationSchedule({
+      //... You can use all the options from localNotifications
+      title:
+      "Going Outside!",
+      message: "Remember to wear a mask!", // (required)
+      date: new Date(Date.now() + 1 * 1000), // in 60 secs
+      vibrate: true,
+      vibration: 300,
+      playSound: true,
+      soundName: 'maskfemale.mp3'
+    });
+   
+  }
+
+  static districtNotification = async(dist) => { 
+    try{
+      fetch("https://bsafe-ampersand.herokuapp.com/covid19/srilanka/districts") .then(res => res.json())
+      .then(data => {
+        var cases=data[dist]
+        PushNotification.localNotificationSchedule({
+          //... You can use all the options from localNotifications
+          title:
+          `Welcome to ${dist} District!`,
+          message: cases==0?"⚠️ No cases reported here, but stay on alert ":cases!=1?`🚨 ${cases} covid-19 cases reported in ${dist}, be cautious `:`🚨 ${cases} covid-19 case reported in ${dist}, be cautious `, // (required)
+          date: new Date(Date.now() + 1 * 1000), // in 60 secs
+          vibrate: true,
+          vibration: 300,
+        }); 
+        
+      })   
+    }catch(error){
+      alert(error)
+    }    
+  }
+
+  static schoolNotification = async() => {  
+    PushNotification.localNotificationSchedule({
+      //... You can use all the options from localNotifications
+      title:
+      "Welcome!",
+      message: "Remember to wash your hands before you see your friends!", // (required)
+      date: new Date(Date.now() + 1 * 1000), // in 60 secs
+      vibrate: true,
+      vibration: 300,
+      playSound: true,
+      soundName: 'schoolhands.mp3'
+    });
+   
+  }
+
+  static schoolLeftNotification = async() => {  
+    PushNotification.localNotificationSchedule({
+      //... You can use all the options from localNotifications
+      title:
+      "Finished School!",
+      message: "Remember to wear a mask!", // (required)
+      date: new Date(Date.now() + 1 * 1000), // in 60 secs
+      vibrate: true,
+      vibration: 300,
+      playSound: true,
+      soundName: 'schoolmask.mp3'
+    });
+   
+  }
+
+  static uniNotification = async() => {  
+    PushNotification.localNotificationSchedule({
+      //... You can use all the options from localNotifications
+      title:
+      "Welcome!",
+      message: "Remember to wash your hands before you see your maties!", // (required)
+      date: new Date(Date.now() + 1 * 1000), // in 60 secs
+      vibrate: true,
+      vibration: 300,
+      playSound: true,
+      soundName: 'unihands.mp3'
+    });
+   
+  }
+
+  static uniLeftNotification = async() => {  
+    PushNotification.localNotificationSchedule({
+      //... You can use all the options from localNotifications
+      title:
+      "Finished Uni!",
+      message: "Remember to wear a mask!", // (required)
+      date: new Date(Date.now() + 1 * 1000), // in 60 secs
+      vibrate: true,
+      vibration: 300,
+      playSound: true,
+      soundName: 'unimask.mp3'
+    });
+   
+  }
+
+  static workNotification = async() => {  
+    PushNotification.localNotificationSchedule({
+      //... You can use all the options from localNotifications
+      title:
+      "Welcome!",
+      message: "Remember to wash your hands before your work begins!", // (required)
+      date: new Date(Date.now() + 1 * 1000), // in 60 secs
+      vibrate: true,
+      vibration: 300,
+      playSound: true,
+      soundName: 'workhands.mp3'
+    });
+   
+  }
+
+  static workLeftNotification = async() => {  
+    PushNotification.localNotificationSchedule({
+      //... You can use all the options from localNotifications
+      title:
+      "Finished Work!",
+      message: "Remember to wear a mask!", // (required)
+      date: new Date(Date.now() + 1 * 1000), // in 60 secs
+      vibrate: true,
+      vibration: 300,
+      playSound: true,
+      soundName: 'workmask.mp3'
+    });
+   
   }
 
   handleChange = (name, value) => {
@@ -57,26 +218,20 @@ class Login extends React.Component {
     console.log('state',this.state);
     var status=false;
     status=await login(this.state);
-    const token = await Notifications.getExpoPushTokenAsync();
-    console.log(token);
-    this.setState({ expoPushToken: token });
-    await AsyncStorage.setItem("expoPushToken",token);
     if(status){ 
-      /* await Location.startLocationUpdatesAsync('updateLoc', {
-        accuracy: Location.Accuracy.High,
-        timeInterval: 2500,
-        distanceInterval: 5,
-        showsBackgroundLocationIndicator: false,
-        pausesUpdatesAutomatically :true,
-        activityType: Location.ActivityType.Fitness
-      }); */
       await Location.startLocationUpdatesAsync('updateLoc', {
-        accuracy: Location.Accuracy.BestForNavigation
+        accuracy: Location.Accuracy.BestForNavigation,
+        timeInterval:30000,
+        foregroundService: { 
+          notificationTitle: 'GPS',
+          notificationBody: ' enabled',
+          notificationColor: '#FF7F27' 
+        }
       });
       const uid=await AsyncStorage.getItem('uid');
       const doc=await db.collection('crowdcount').doc(uid).get();
       const data=doc.data();          
-      const radius = 50;
+      var radius = 50;
       if(data.places){
         Object.keys(data.places).map(async(place,index) => { 
           const base=data.places;
@@ -87,12 +242,41 @@ class Login extends React.Component {
             await Location.startGeofencingAsync(place, [
               {
                 ...placeLng,
-                radius
+                radius,
+
               }
             ]);
             console.log(place,placeLng);
         })
       }
+      /* await db.collection('districtWise').get().then(function(querySnapshot) {
+        querySnapshot.forEach(async function(doc) {
+            const data=doc.data();
+            const dist=data.district;
+             const placeLng=data.location;
+              radius=10000;
+              await Location.startGeofencingAsync(dist, [
+                {
+                  ...placeLng,
+                  radius,
+                }
+              ]);  
+             if(dist=="Colombo"||dist=="Ampara"||dist=="Jaffna"||dist=="Matara"||dist=="Galle"||dist=="Badulla"||dist=="Anuradhapura"||dist=="Kalutara"||dist=="Vavuniya"){
+              const placeLng=data.location;
+              radius=10000;
+              await Location.startGeofencingAsync(dist, [
+                {
+                  ...placeLng,
+                  radius,
+                }
+              ]); 
+            }  
+                  
+            
+        });
+      })      */
+
+
       const tasks=await TaskManager.getRegisteredTasksAsync();
       console.log("tasksOS",JSON.stringify(tasks));
       this.props.navigation.navigate('App');
@@ -104,7 +288,6 @@ class Login extends React.Component {
 
         if (user) {
           //await TaskManager.unregisterAllTasksAsync()       
-          this._notificationSubscription = Notifications.addListener(this._handleNotification);
           const tasks=await TaskManager.getRegisteredTasksAsync();
           console.log("tasksCDM",JSON.stringify(tasks));
           this.setState({password:""})
@@ -112,29 +295,21 @@ class Login extends React.Component {
           this.props.navigation.navigate('App');
         }
       })
+      var that = this;
+      PushNotification.configure({
+        // (required) Called when a remote or local notification is opened or received
+        onNotification: function(notification) {
+          that.handleNotification(notification);
+      
+        },popInitialNotification: true,
+        requestPermissions: true
+      })
 
     } catch (error) {
       console.log(error)
     }
 }
 
-_handleNotification = async(notification) => {
-  Vibration.vibrate();
-  console.log(notification);
-  this.setState({ notification: notification });
-  if(notification.origin==="selected" && notification.data['data']==="hands"){
-    const {navigation}= this.props;
-    navigation.navigate('HandWash');
-  }else if(notification.origin==="selected" && notification.data['data']==="mask"){
-    const {navigation}= this.props;
-    navigation.navigate('PutMask');
-  }
-};
-
-static getExpoPushToken=async()=>{
-  var token=await AsyncStorage.getItem("expoPushToken"); 
-  return token;
-}
 
   render() {
     const { navigation } = this.props;
@@ -157,48 +332,15 @@ static getExpoPushToken=async()=>{
                           paddingTop: 10,
                           paddingBottom:20
                         }}
-                        color="#333"
+                        color="#FF7F27"
                         size={24}
                       >
-                        Login
+                        BSafe
                       </Text>
 
                     <Block flex={0.5} row middle space="between" style={{ marginTop:18, marginBottom: 28 }}>
-                      <GaButton
-                        round
-                        onlyIcon
-                        shadowless
-                        icon="twitter"
-                        iconFamily="Font-Awesome"
-                        iconColor={theme.COLORS.WHITE}
-                        iconSize={theme.SIZES.BASE * 1.625}
-                        color={nowTheme.COLORS.TWITTER}
-                        style={[styles.social, styles.shadow]}
-                      />
+                      <Image source = {require('../assets/bsafe.png')} style = {{ width: 80, height: 80 }}/>
 
-                      <GaButton
-                        round
-                        onlyIcon
-                        shadowless
-                        icon="google"
-                        iconFamily="Font-Awesome"
-                        iconColor={theme.COLORS.WHITE}
-                        iconSize={theme.SIZES.BASE * 1.625}
-                        color={nowTheme.COLORS.GOOGLE}
-                        style={[styles.social, styles.shadow]}
-                        onPress={this.handleGoogleLogin}
-                      />
-                      <GaButton
-                        round
-                        onlyIcon
-                        shadowless
-                        icon="facebook"
-                        iconFamily="Font-Awesome"
-                        iconColor={theme.COLORS.WHITE}
-                        iconSize={theme.SIZES.BASE * 1.625}
-                        color={nowTheme.COLORS.FACEBOOK}
-                        style={[styles.social, styles.shadow]}
-                      />
                     </Block>
                   </Block>
                   <Block flex={0.1} middle>
@@ -210,7 +352,7 @@ static getExpoPushToken=async()=>{
                       muted
                       size={16}
                     >
-                      or be classical
+                      Login
                     </Text>
                   </Block>
                   <Block flex={1} middle space="between">
@@ -252,25 +394,6 @@ static getExpoPushToken=async()=>{
                               }
                             />
                           </Block>
-                          {/* <Block
-                            style={{ marginVertical: theme.SIZES.BASE, marginLeft: 15}}
-                            row
-                            width={width * 0.75}
-                          >
-                            <Checkbox
-                              checkboxStyle={{
-                                borderWidth: 1,
-                                borderRadius: 2,
-                                borderColor: '#E3E3E3'
-                              }}
-                              color={nowTheme.COLORS.PRIMARY}
-                              labelStyle={{
-                                color: nowTheme.COLORS.HEADER,
-                                fontFamily: 'montserrat-regular'
-                              }}
-                              label="I agree to the terms and conditions."
-                            />
-                          </Block> */}
                         </Block>
                         <Block center>
                           <Button round style={styles.createButton} onPress={this.handleSubmitLogin}>
@@ -394,53 +517,847 @@ TaskManager.defineTask('updateLoc', async({ data, error }) => {
   }
   try{
   const {locations}=data;
-  
   console.log('Received new locations', locations[0]);
-  const uid=await AsyncStorage.getItem('uid')
-  console.log("uid"+uid)
+  const uid=await AsyncStorage.getItem('uid');
+  console.log("uid"+uid);
   await db.collection('users').doc(uid).update({
     "latitude":locations[0].coords.latitude,
     "longitude":locations[0].coords.longitude
   })
-  const token=await Login.getExpoPushToken()
   await db.collection('crowdcount').doc(uid).get().then(async(doc)=>{
     var data=doc.data();
-    console.log("doc"+JSON.stringify(data))    
-    if(data && data['count']>0){      
-      console.log("token"+JSON.stringify(token))
-      const message = {
-          to: token,
-          sound: 'default',
-          title: 'Be Aware!',
-          body: 'People nearby, make sure to keep your distance!',
-          data: { data: 'beaware' },
-          _displayInForeground: true,
-        };
-        const response = await fetch('https://exp.host/--/api/v2/push/send', {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Accept-encoding': 'gzip, deflate',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(message),
-        }); 
-        try {
+    console.log("doc"+JSON.stringify(data));
     
-          let soundObject  = new Audio.Sound();
-          await soundObject.loadAsync(require('../assets/sounds/beaware.mp3'));
-          await soundObject.playAsync();     
+    if(data && data['count']>0){
+      await Login.geoNotification();      
     
-      } catch (error) {
-          alert("error"+error);
-      }
     }
   })
+
+  const lat=locations[0].coords.latitude;
+  const lon=locations[0].coords.longitude;
+
+  const location={
+    "latitude":lat,
+    "longitude":lon
+  }
+  
+
+ 
+  const HERE_API_KEY="";
+  const url = `https://reverse.geocoder.ls.hereapi.com/6.2/reversegeocode.json?apiKey=${HERE_API_KEY}&mode=retrieveAddresses&prox=${lat},${lon}`
+  fetch(url)
+    .then(res => res.json())
+    .then(async(resJson) => {
+      if (resJson
+        && resJson.Response
+        && resJson.Response.View
+        && resJson.Response.View[0]
+        && resJson.Response.View[0].Result
+        && resJson.Response.View[0].Result[0]) {
+          console.log("GOODDD",resJson.Response.View[0].Result[0].Location.Address.County)
+          var district=resJson.Response.View[0].Result[0].Location.Address.County;
+          const distDoc=await db.collection('UserDistricts').doc(uid).get();
+          const distData=distDoc.data();
+          if(distData.districts.Ampara==0 && district=="Ampara"){
+            const currDist=district;
+            Object.keys(distData.districts).map(async(dist,index) => { 
+              const caseCount=distData["districts"][dist];      
+              const distToUpd=`districts.${dist}`
+              if(dist==currDist){
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,1);
+              }
+              else if(caseCount==1){
+                      
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,0);
+                
+              }     
+            })
+            await Login.districtNotification(district);   
+
+          }else if(distData.districts.Anuradhapura==0 && district=="Anuradhapura"){ 
+            const currDist=district;
+            Object.keys(distData.districts).map(async(dist,index) => { 
+              const caseCount=distData["districts"][dist];
+              const distToUpd=`districts.${dist}`
+              if(dist==currDist){
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,1);
+              }
+              else if(caseCount==1){
+                      
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,0);
+                
+              }     
+            })
+            await Login.districtNotification(district);   
+          }else if(distData.districts.Badulla==0 && district=="Badulla"){   
+            const currDist=district;
+            Object.keys(distData.districts).map(async(dist,index) => { 
+              const caseCount=distData["districts"][dist];
+              const distToUpd=`districts.${dist}`
+              if(dist==currDist){
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,1);
+              }
+              else if(caseCount==1){
+                      
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,0);
+                
+              }     
+            })
+            await Login.districtNotification(district);    
+          }else if(distData.districts.Batticaloa==0 && district=="Batticaloa"){
+            const currDist=district;
+            Object.keys(distData.districts).map(async(dist,index) => { 
+              const caseCount=distData["districts"][dist];
+              const distToUpd=`districts.${dist}`
+              if(dist==currDist){
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,1);
+              }
+              else if(caseCount==1){
+                      
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,0);
+                
+              }     
+            })
+            await Login.districtNotification(district);   
+          }else if(distData.districts.Colombo==0 && district=="Colombo"){
+            const currDist=district;
+            Object.keys(distData.districts).map(async(dist,index) => { 
+              const caseCount=distData["districts"][dist];      
+              const distToUpd=`districts.${dist}`
+              if(dist==currDist){
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,1);
+              }
+              else if(caseCount==1){
+                      
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,0);
+                
+              }     
+            })
+            await Login.districtNotification(district); 
+          }else if(distData.districts.Galle==0 && district=="Galle"){
+            const currDist=district;
+            Object.keys(distData.districts).map(async(dist,index) => { 
+              const caseCount=distData["districts"][dist];
+              const distToUpd=`districts.${dist}`
+              if(dist==currDist){
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,1);
+              }
+              else if(caseCount==1){
+                      
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,0);
+                
+              }     
+            })
+            await Login.districtNotification(district); 
+          }else if(distData.districts.Gampaha==0 && district=="Gampaha"){
+            const currDist=district;
+            Object.keys(distData.districts).map(async(dist,index) => { 
+              const caseCount=distData["districts"][dist];
+              const distToUpd=`districts.${dist}`
+              if(dist==currDist){
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,1);
+              }
+              else if(caseCount==1){
+                      
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,0);
+                
+              }     
+            })
+            await Login.districtNotification(district); 
+          }else if(distData.districts.Hambantota==0 && district=="Hambantota"){
+            const currDist=district;
+            Object.keys(distData.districts).map(async(dist,index) => { 
+              const caseCount=distData["districts"][dist];
+              const distToUpd=`districts.${dist}`
+              if(dist==currDist){
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,1);
+              }
+              else if(caseCount==1){
+                      
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,0);
+                
+              }     
+            })
+            await Login.districtNotification(district); 
+          }else if(distData.districts.Jaffna==0 && district=="Jaffna"){
+            const currDist=district;
+            Object.keys(distData.districts).map(async(dist,index) => { 
+              const caseCount=distData["districts"][dist];
+              const distToUpd=`districts.${dist}`
+              if(dist==currDist){
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,1);
+              }
+              else if(caseCount==1){
+                      
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,0);
+                
+              }     
+            })
+            await Login.districtNotification(district); 
+          }else if(distData.districts.Kalutara==0 && district=="Kalutara"){
+            const currDist=district;
+            Object.keys(distData.districts).map(async(dist,index) => { 
+              const caseCount=distData["districts"][dist];
+              const distToUpd=`districts.${dist}`
+              if(dist==currDist){
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,1);
+              }
+              else if(caseCount==1){
+                      
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,0);
+                
+              }     
+            })
+            await Login.districtNotification(district); 
+          }else if(distData.districts.Kandy==0 && district=="Kandy"){
+            const currDist=district;
+            Object.keys(distData.districts).map(async(dist,index) => { 
+              const caseCount=distData["districts"][dist];
+              const distToUpd=`districts.${dist}`
+              if(dist==currDist){
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,1);
+              }
+              else if(caseCount==1){
+                      
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,0);
+                
+              }     
+            })
+            await Login.districtNotification(district); 
+          }else if(distData.districts.Kegalle==0 && district=="Kegalle"){
+            const currDist=district;
+            Object.keys(distData.districts).map(async(dist,index) => { 
+              const caseCount=distData["districts"][dist];
+              const distToUpd=`districts.${dist}`
+              if(dist==currDist){
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,1);
+              }
+              else if(caseCount==1){
+                      
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,0);
+                
+              }     
+            })
+            await Login.districtNotification(district); 
+          }else if(distData.districts.Kilinochchi==0 && district=="Kilinochchi"){
+            const currDist=district;
+            Object.keys(distData.districts).map(async(dist,index) => { 
+              const caseCount=distData["districts"][dist];
+              const distToUpd=`districts.${dist}`
+              if(dist==currDist){
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,1);
+              }
+              else if(caseCount==1){
+                      
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,0);
+                
+              }     
+            })
+            await Login.districtNotification(district); 
+          }else if(distData.districts.Kurunegala==0 && district=="Kurunegala"){
+            const currDist=district;
+            Object.keys(distData.districts).map(async(dist,index) => { 
+              const caseCount=distData["districts"][dist];
+              const distToUpd=`districts.${dist}`
+              if(dist==currDist){
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,1);
+              }
+              else if(caseCount==1){
+                      
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,0);
+                
+              }     
+            })
+            await Login.districtNotification(district); 
+          }else if(distData.districts.Mannar==0 && district=="Mannar"){
+            const currDist=district;
+            Object.keys(distData.districts).map(async(dist,index) => { 
+              const caseCount=distData["districts"][dist];
+              const distToUpd=`districts.${dist}`
+              if(dist==currDist){
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,1);
+              }
+              else if(caseCount==1){
+                      
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,0);
+                
+              }     
+            })
+            await Login.districtNotification(district); 
+          }else if(distData.districts.Matale==0 && district=="Matale"){
+            const currDist=district;
+            Object.keys(distData.districts).map(async(dist,index) => { 
+              const caseCount=distData["districts"][dist];
+              const distToUpd=`districts.${dist}`
+              if(dist==currDist){
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,1);
+              }
+              else if(caseCount==1){
+                      
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,0);
+                
+              }     
+            })
+            await Login.districtNotification(district); 
+          }else if(distData.districts.Matara==0 && district=="Matara"){
+            const currDist=district;
+            Object.keys(distData.districts).map(async(dist,index) => { 
+              const caseCount=distData["districts"][dist];
+              const distToUpd=`districts.${dist}`
+              if(dist==currDist){
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,1);
+              }
+              else if(caseCount==1){
+                      
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,0);
+                
+              }     
+            })
+            await Login.districtNotification(district); 
+          }else if(distData.districts.Monaragala==0 && district=="Monaragala"){
+            const currDist=district;
+            Object.keys(distData.districts).map(async(dist,index) => { 
+              const caseCount=distData["districts"][dist];
+              const distToUpd=`districts.${dist}`
+              if(dist==currDist){
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,1);
+              }
+              else if(caseCount==1){
+                      
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,0);
+                
+              }     
+            })
+            await Login.districtNotification(district); 
+          }else if(distData.districts.Mullaittivu==0 && district=="Mullaittivu"){
+            const currDist=district;
+            Object.keys(distData.districts).map(async(dist,index) => { 
+              const caseCount=distData["districts"][dist];
+              const currDist=district.replace(" ","_");
+              const distToUpd=`districts.${dist}`
+              if(dist==currDist){
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,1);
+              }
+              else if(caseCount==1){
+                      
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,0);
+                
+              }     
+            })
+            await Login.districtNotification(district); 
+          }else if(distData.districts.Nuwara_Eliya==0 && district=="Nuwara Eliya"){
+            const currDist=district.replace(" ","_");    
+            Object.keys(distData.districts).map(async(dist,index) => { 
+              const caseCount=distData["districts"][dist];
+              const distToUpd=`districts.${dist}`
+              if(dist==currDist){
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,1);
+              }
+              else if(caseCount==1){
+                      
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,0);
+                
+              }
+                
+                
+            })
+            await Login.districtNotification(district); 
+          }else if(distData.districts.Polonnaruwa==0 && district=="Polonnaruwa"){
+            const currDist=district;
+            Object.keys(distData.districts).map(async(dist,index) => { 
+              const caseCount=distData["districts"][dist];
+              const distToUpd=`districts.${dist}`
+              if(dist==currDist){
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,1);
+              }
+              else if(caseCount==1){
+                      
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,0);
+                
+              }     
+            })
+            await Login.districtNotification(district); 
+          }else if(distData.districts.Puttalam==0 && district=="Puttalam"){
+            const currDist=district;
+            Object.keys(distData.districts).map(async(dist,index) => { 
+              const caseCount=distData["districts"][dist];
+              const distToUpd=`districts.${dist}`
+              if(dist==currDist){
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,1);
+              }
+              else if(caseCount==1){
+                      
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,0);
+                
+              }     
+            })
+            await Login.districtNotification(district); 
+          }else if(distData.districts.Rathnapura==0 && district=="Rathnapura"){
+            const currDist=district;
+            Object.keys(distData.districts).map(async(dist,index) => { 
+              const caseCount=distData["districts"][dist];
+              const distToUpd=`districts.${dist}`
+              if(dist==currDist){
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,1);
+              }
+              else if(caseCount==1){
+                      
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,0);
+                
+              }     
+            })
+            await Login.districtNotification(district); 
+          }else if(distData.districts.Trincomalee==0 && district=="Trincomalee"){
+            const currDist=district
+            Object.keys(distData.districts).map(async(dist,index) => { 
+              const caseCount=distData["districts"][dist];
+              const distToUpd=`districts.${dist}`
+              if(dist==currDist){
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,1);
+              }
+              else if(caseCount==1){
+                      
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,0);
+                
+              }     
+            })
+            await Login.districtNotification(district); 
+          }else if(distData.districts.Vavuniya==0 && district=="Vavuniya"){
+            const currDist=district;
+            Object.keys(distData.districts).map(async(dist,index) => { 
+              const caseCount=distData["districts"][dist];
+              const distToUpd=`districts.${dist}`
+              if(dist==currDist){
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,1);
+              }
+              else if(caseCount==1){
+                      
+                await db.collection('UserDistricts').doc(uid).update(distToUpd,0);
+                
+              }     
+            })
+            await Login.districtNotification(district); 
+          }
+        }
+    })
+    .catch((e) => {
+      console.log('Error in getAddressFromCoordinates', e)
+      
+    })
+  
+  //const res=await Location.reverseGeocodeAsync(location)
+  
+ 
+  
+
+  
 }catch(error){
   alert("error"+error);
 }
   
 });
+
+/* TaskManager.defineTask('Colombo', async({ data: { eventType, region }, error }) => {
+  if (error) {
+    // check `error.message` for more details.
+    return;
+  }
+  try{
+  console.log(eventType);
+  if (eventType === Location.GeofencingEventType.Enter) {    
+    console.log("You've entered Colombo:", region);
+    await Login.districtNotification("Colombo");      
+    
+  }
+}catch(error){
+  alert("error"+error);
+}
+});
+TaskManager.defineTask('Ampara', async({ data: { eventType, region }, error }) => {
+  if (error) {
+    // check `error.message` for more details.
+    return;
+  }
+  try{
+  console.log(eventType);
+  if (eventType === Location.GeofencingEventType.Enter) {    
+    console.log("You've entered Ampara:", region);
+    await Login.districtNotification("Ampara");      
+    
+  }
+}catch(error){
+  alert("error"+error);
+}
+});
+TaskManager.defineTask('Anuradhapura', async({ data: { eventType, region }, error }) => {
+  if (error) {
+    // check `error.message` for more details.
+    return;
+  }
+  try{
+  console.log(eventType);
+  if (eventType === Location.GeofencingEventType.Enter) {    
+    console.log("You've entered Anuradhapura:", region);
+    await Login.districtNotification("Anuradhapura");      
+    
+  }
+}catch(error){
+  alert("error"+error);
+}
+});
+TaskManager.defineTask('Badulla', async({ data: { eventType, region }, error }) => {
+  if (error) {
+    // check `error.message` for more details.
+    return;
+  }
+  try{
+  console.log(eventType);
+  if (eventType === Location.GeofencingEventType.Enter) {    
+    console.log("You've entered Badulla:", region);
+    await Login.districtNotification("Badulla");      
+    
+  }
+}catch(error){
+  alert("error"+error);
+}
+});
+TaskManager.defineTask('Batticaloa', async({ data: { eventType, region }, error }) => {
+  if (error) {
+    // check `error.message` for more details.
+    return;
+  }
+  try{
+  console.log(eventType);
+  if (eventType === Location.GeofencingEventType.Enter) {    
+    console.log("You've entered Batticaloa:", region);
+    await Login.districtNotification("Batticaloa");      
+    
+  }
+}catch(error){
+  alert("error"+error);
+}
+});
+TaskManager.defineTask('Galle', async({ data: { eventType, region }, error }) => {
+  if (error) {
+    // check `error.message` for more details.
+    return;
+  }
+  try{
+  console.log(eventType);
+  if (eventType === Location.GeofencingEventType.Enter) {    
+    console.log("You've entered Galle:", region);
+    await Login.districtNotification("Galle");      
+    
+  }
+}catch(error){
+  alert("error"+error);
+}
+});
+TaskManager.defineTask('Gampaha', async({ data: { eventType, region }, error }) => {
+  if (error) {
+    // check `error.message` for more details.
+    return;
+  }
+  try{
+  console.log(eventType);
+  if (eventType === Location.GeofencingEventType.Enter) {    
+    console.log("You've entered Gampaha:", region);
+    await Login.districtNotification("Gampaha");      
+    
+  }
+}catch(error){
+  alert("error"+error);
+}
+});
+TaskManager.defineTask('Hambantota', async({ data: { eventType, region }, error }) => {
+  if (error) {
+    // check `error.message` for more details.
+    return;
+  }
+  try{
+  console.log(eventType);
+  if (eventType === Location.GeofencingEventType.Enter) {    
+    console.log("You've entered Hambantota:", region);
+    await Login.districtNotification("Hambantota");      
+    
+  }
+}catch(error){
+  alert("error"+error);
+}
+});
+TaskManager.defineTask('Jaffna', async({ data: { eventType, region }, error }) => {
+  if (error) {
+    // check `error.message` for more details.
+    return;
+  }
+  try{
+  console.log(eventType);
+  if (eventType === Location.GeofencingEventType.Enter) {    
+    console.log("You've entered Jaffna:", region);
+    await Login.districtNotification("Jaffna");      
+    
+  }
+}catch(error){
+  alert("error"+error);
+}
+});
+TaskManager.defineTask('Kalutara', async({ data: { eventType, region }, error }) => {
+  if (error) {
+    // check `error.message` for more details.
+    return;
+  }
+  try{
+  console.log(eventType);
+  if (eventType === Location.GeofencingEventType.Enter) {    
+    console.log("You've entered Kalutara:", region);
+    await Login.districtNotification("Kalutara");      
+    
+  }
+}catch(error){
+  alert("error"+error);
+}
+});
+TaskManager.defineTask('Kandy', async({ data: { eventType, region }, error }) => {
+  if (error) {
+    // check `error.message` for more details.
+    return;
+  }
+  try{
+  console.log(eventType);
+  if (eventType === Location.GeofencingEventType.Enter) {    
+    console.log("You've entered Kandy:", region);
+    await Login.districtNotification("Kandy");      
+    
+  }
+}catch(error){
+  alert("error"+error);
+}
+});
+TaskManager.defineTask('Kegalle', async({ data: { eventType, region }, error }) => {
+  if (error) {
+    // check `error.message` for more details.
+    return;
+  }
+  try{
+  console.log(eventType);
+  if (eventType === Location.GeofencingEventType.Enter) {    
+    console.log("You've entered Kegalle:", region);
+    await Login.districtNotification("Kegalle");      
+    
+  }
+}catch(error){
+  alert("error"+error);
+}
+});
+TaskManager.defineTask('Kilinochchi', async({ data: { eventType, region }, error }) => {
+  if (error) {
+    // check `error.message` for more details.
+    return;
+  }
+  try{
+  console.log(eventType);
+  if (eventType === Location.GeofencingEventType.Enter) {    
+    console.log("You've entered Kilinochchi:", region);
+    await Login.districtNotification("Kilinochchi");      
+    
+  }
+}catch(error){
+  alert("error"+error);
+}
+});
+TaskManager.defineTask('Kurunegala', async({ data: { eventType, region }, error }) => {
+  if (error) {
+    // check `error.message` for more details.
+    return;
+  }
+  try{
+  console.log(eventType);
+  if (eventType === Location.GeofencingEventType.Enter) {    
+    console.log("You've entered Kurunegala:", region);
+    await Login.districtNotification("Kurunegala");      
+    
+  }
+}catch(error){
+  alert("error"+error);
+}
+});
+TaskManager.defineTask('Mannar', async({ data: { eventType, region }, error }) => {
+  if (error) {
+    // check `error.message` for more details.
+    return;
+  }
+  try{
+  console.log(eventType);
+  if (eventType === Location.GeofencingEventType.Enter) {    
+    console.log("You've entered Mannar:", region);
+    await Login.districtNotification("Mannar");      
+    
+  }
+}catch(error){
+  alert("error"+error);
+}
+});
+TaskManager.defineTask('Matale', async({ data: { eventType, region }, error }) => {
+  if (error) {
+    // check `error.message` for more details.
+    return;
+  }
+  try{
+  console.log(eventType);
+  if (eventType === Location.GeofencingEventType.Enter) {    
+    console.log("You've entered Matale:", region);
+    await Login.districtNotification("Matale");      
+    
+  }
+}catch(error){
+  alert("error"+error);
+}
+});
+TaskManager.defineTask('Matara', async({ data: { eventType, region }, error }) => {
+  if (error) {
+    // check `error.message` for more details.
+    return;
+  }
+  try{
+  console.log(eventType);
+  if (eventType === Location.GeofencingEventType.Enter) {    
+    console.log("You've entered Matara:", region);
+    await Login.districtNotification("Matara");      
+    
+  }
+}catch(error){
+  alert("error"+error);
+}
+});
+TaskManager.defineTask('Monaragala', async({ data: { eventType, region }, error }) => {
+  if (error) {
+    // check `error.message` for more details.
+    return;
+  }
+  try{
+  console.log(eventType);
+  if (eventType === Location.GeofencingEventType.Enter) {    
+    console.log("You've entered Monaragala:", region);
+    await Login.districtNotification("Monaragala");      
+    
+  }
+}catch(error){
+  alert("error"+error);
+}
+});
+TaskManager.defineTask('Mullaitivu', async({ data: { eventType, region }, error }) => {
+  if (error) {
+    // check `error.message` for more details.
+    return;
+  }
+  try{
+  console.log(eventType);
+  if (eventType === Location.GeofencingEventType.Enter) {    
+    console.log("You've entered Mullaitivu:", region);
+    await Login.districtNotification("Mullaitivu");      
+    
+  }
+}catch(error){
+  alert("error"+error);
+}
+});
+TaskManager.defineTask('Nuwara Eliya', async({ data: { eventType, region }, error }) => {
+  if (error) {
+    // check `error.message` for more details.
+    return;
+  }
+  try{
+  console.log(eventType);
+  if (eventType === Location.GeofencingEventType.Enter) {    
+    console.log("You've entered Nuwara Eliya:", region);
+    await Login.districtNotification("Nuwara Eliya");      
+    
+  }
+}catch(error){
+  alert("error"+error);
+}
+});
+TaskManager.defineTask('Polonnaruwa', async({ data: { eventType, region }, error }) => {
+  if (error) {
+    // check `error.message` for more details.
+    return;
+  }
+  try{
+  console.log(eventType);
+  if (eventType === Location.GeofencingEventType.Enter) {    
+    console.log("You've entered Polonnaruwa:", region);
+    await Login.districtNotification("Polonnaruwa");      
+    
+  }
+}catch(error){
+  alert("error"+error);
+}
+});
+TaskManager.defineTask('Puttalam', async({ data: { eventType, region }, error }) => {
+  if (error) {
+    // check `error.message` for more details.
+    return;
+  }
+  try{
+  console.log(eventType);
+  if (eventType === Location.GeofencingEventType.Enter) {    
+    console.log("You've entered Puttalam:", region);
+    await Login.districtNotification("Puttalam");      
+    
+  }
+}catch(error){
+  alert("error"+error);
+}
+});
+TaskManager.defineTask('Ratnapura', async({ data: { eventType, region }, error }) => {
+  if (error) {
+    // check `error.message` for more details.
+    return;
+  }
+  try{
+  console.log(eventType);
+  if (eventType === Location.GeofencingEventType.Enter) {    
+    console.log("You've entered Ratnapura:", region);
+    await Login.districtNotification("Ratnapura");      
+    
+  }
+}catch(error){
+  alert("error"+error);
+}
+});
+TaskManager.defineTask('Trincomalee', async({ data: { eventType, region }, error }) => {
+  if (error) {
+    // check `error.message` for more details.
+    return;
+  }
+  try{
+  console.log(eventType);
+  if (eventType === Location.GeofencingEventType.Enter) {    
+    console.log("You've entered Trincomalee:", region);
+    await Login.districtNotification("Trincomalee");      
+    
+  }
+}catch(error){
+  alert("error"+error);
+}
+});
+TaskManager.defineTask('Vavuniya', async({ data: { eventType, region }, error }) => {
+  if (error) {
+    // check `error.message` for more details.
+    return;
+  }
+  try{
+  console.log(eventType);
+  if (eventType === Location.GeofencingEventType.Enter) {    
+    console.log("You've entered Vavuniya:", region);
+    await Login.districtNotification("Vavuniya");      
+    
+  }
+}catch(error){
+  alert("error"+error);
+}
+}); */
 
 TaskManager.defineTask('home', async({ data: { eventType, region }, error }) => {
   if (error) {
@@ -450,66 +1367,16 @@ TaskManager.defineTask('home', async({ data: { eventType, region }, error }) => 
   try{
   console.log(eventType);
   
-  const token=await Login.getExpoPushToken()
-  console.log("token"+JSON.stringify(token))
   if (eventType === Location.GeofencingEventType.Enter) {    
     console.log("You've entered region:", region);
-    const message = {
-      to: token,
-      sound: 'default',
-      title: 'Wecome Home!',
-      body: 'Remember to wash your hands before you see your loved ones!',
-      data: { data: 'hands' },
-      _displayInForeground: true,
-    };
-    const response = await fetch('https://exp.host/--/api/v2/push/send', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Accept-encoding': 'gzip, deflate',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(message),
-    });
-    try {
-    
-      let soundObject  = new Audio.Sound();
-      await soundObject.loadAsync(require('../assets/sounds/handsfemale.mp3'));
-      await soundObject.playAsync();     
+    await Login.homeNotification();  
 
-  } catch (error) {
-      //console.log("error"+error);
-  }
     
     
   } else if (eventType === Location.GeofencingEventType.Exit) {
     console.log("You've left region:", region);
-    const message = {
-      to: token,
-      sound: 'default',
-      title: 'Going Outside?',
-      body: 'Remember to wear a mask!',
-      data: { data: 'mask' },
-      _displayInForeground: true,
-    };
-    const response = await fetch('https://exp.host/--/api/v2/push/send', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Accept-encoding': 'gzip, deflate',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(message),
-    });
-    try {
-    
-      let soundObject  = new Audio.Sound();
-      await soundObject.loadAsync(require('../assets/sounds/maskfemale.mp3'));
-      await soundObject.playAsync();        
+    await Login.homeLeftNotification();  
 
-  } catch (error) {
-      //console.log("error"+error);
-  }
   }
 }catch(error){
   alert("error"+error);
@@ -524,66 +1391,15 @@ TaskManager.defineTask('school', async({ data: { eventType, region }, error }) =
   try{
   console.log(eventType);
   
-  const token=await Login.getExpoPushToken()
-  console.log("token"+JSON.stringify(token))
   if (eventType === Location.GeofencingEventType.Enter) {    
     console.log("You've entered school:", region);
-    const message = {
-      to: token,
-      sound: 'default',
-      title: 'Wecome!',
-      body: 'Remember to wash your hands before you meet your friends!',
-      data: { data: 'hands' },
-      _displayInForeground: true,
-    };
-    const response = await fetch('https://exp.host/--/api/v2/push/send', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Accept-encoding': 'gzip, deflate',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(message),
-    });
-    try {
-    
-      let soundObject  = new Audio.Sound();
-      await soundObject.loadAsync(require('../assets/sounds/schoolhands.mp3'));
-      await soundObject.playAsync();     
-
-  } catch (error) {
-      //console.log("error"+error);
-  } 
+    await Login.schoolNotification(); 
     
     
   } else if (eventType === Location.GeofencingEventType.Exit) {
     console.log("You've left school:", region);
-    const message = {
-      to: token,
-      sound: 'default',
-      title: 'Finished School?',
-      body: 'Remember to wear a mask!',
-      data: { data: 'mask' },
-      _displayInForeground: true,
-    };
-    const response = await fetch('https://exp.host/--/api/v2/push/send', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Accept-encoding': 'gzip, deflate',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(message),
-    });
-    try {
-    
-      let soundObject  = new Audio.Sound();
-      await soundObject.loadAsync(require('../assets/sounds/schoolmask.mp3'));
-      await soundObject.playAsync();        
+    await Login.schoolLeftNotification(); 
 
-  } catch (error) {
-      //console.log("error"+error);
-  } 
   }
 }catch(error){
   alert("error"+error);
@@ -597,66 +1413,16 @@ TaskManager.defineTask('university', async({ data: { eventType, region }, error 
   try{
   console.log(eventType);
   
-  const token=await Login.getExpoPushToken()
-  console.log("token"+JSON.stringify(token))
   if (eventType === Location.GeofencingEventType.Enter) {    
     console.log("You've entered university:", region);
-    const message = {
-      to: token,
-      sound: 'default',
-      title: 'Wecome!',
-      body: 'Remember to wash your hands before you see your maties!',
-      data: { data: 'hands' },
-      _displayInForeground: true,
-    };
-    const response = await fetch('https://exp.host/--/api/v2/push/send', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Accept-encoding': 'gzip, deflate',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(message),
-    });
-    try {
-    
-      let soundObject  = new Audio.Sound();
-      await soundObject.loadAsync(require('../assets/sounds/unihands.mp3'));
-      await soundObject.playAsync();     
+    await Login.uniNotification(); 
 
-  } catch (error) {
-      //console.log("error"+error);
-  } 
     
     
   } else if (eventType === Location.GeofencingEventType.Exit) {
     console.log("You've left uni:", region);
-    const message = {
-      to: token,
-      sound: 'default',
-      title: 'Finished Uni?',
-      body: 'Remember to wear a mask!',
-      data: { data: 'mask' },
-      _displayInForeground: true,
-    };
-    const response = await fetch('https://exp.host/--/api/v2/push/send', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Accept-encoding': 'gzip, deflate',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(message),
-    });
-   try {
-    
-      let soundObject  = new Audio.Sound();
-      await soundObject.loadAsync(require('../assets/sounds/unimask.mp3'));
-      await soundObject.playAsync();        
+    await Login.uniLeftNotification(); 
 
-  } catch (error) {
-      //console.log("error"+error);
-  } 
   }
 }catch(error){
   alert("error"+error);
@@ -670,69 +1436,18 @@ TaskManager.defineTask('workplace', async({ data: { eventType, region }, error }
   try{
   console.log(eventType);
   
-  const token=await Login.getExpoPushToken()
-  console.log("token"+JSON.stringify(token))
   if (eventType === Location.GeofencingEventType.Enter) {    
     console.log("You've entered work:", region);
-    const message = {
-      to: token,
-      sound: 'default',
-      title: 'Wecome!',
-      body: 'Remember to wash your hands before your work begins!',
-      data: { data: 'hands' },
-      _displayInForeground: true,
-    };
-    const response = await fetch('https://exp.host/--/api/v2/push/send', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Accept-encoding': 'gzip, deflate',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(message),
-    });
-    try {
-    
-      let soundObject  = new Audio.Sound();
-      await soundObject.loadAsync(require('../assets/sounds/workhands.mp3'));
-      await soundObject.playAsync();     
+    await Login.workNotification(); 
 
-  } catch (error) {
-      //console.log("error"+error);
-  } 
     
     
   } else if (eventType === Location.GeofencingEventType.Exit) {
     console.log("You've left work:", region);
-    const message = {
-      to: token,
-      sound: 'default',
-      title: 'Finished Work?',
-      body: 'Remember to wear a mask!',
-      data: { data: 'mask' },
-      _displayInForeground: true,
-    };
-    const response = await fetch('https://exp.host/--/api/v2/push/send', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Accept-encoding': 'gzip, deflate',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(message),
-    });
-    try {
-    
-      let soundObject  = new Audio.Sound();
-      await soundObject.loadAsync(require('../assets/sounds/workmask.mp3'));
-      await soundObject.playAsync();        
+    await Login.workLeftNotification(); 
 
-  } catch (error) {
-      //console.log("error"+error);
-  } 
   }
 }catch(error){
   alert("error"+error);
 }
 });
-

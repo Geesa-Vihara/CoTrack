@@ -6,7 +6,8 @@ import {
   StatusBar,
   TouchableWithoutFeedback,
   Keyboard,
-  AsyncStorage
+  AsyncStorage,
+  Image
 } from 'react-native';
 import { Block, Checkbox, Text, Button as GaButton, theme } from 'galio-framework';
 
@@ -40,11 +41,14 @@ class Register extends React.Component {
     try{
       res = await signUp(this.state);
       if(res){  
-        const token = await Notifications.getExpoPushTokenAsync();
-        console.log(token);
-        await AsyncStorage.setItem("expoPushToken",token);
         await Location.startLocationUpdatesAsync('updateLoc', {
-          accuracy: Location.Accuracy.BestForNavigation
+          accuracy: Location.Accuracy.BestForNavigation,
+          timeInterval:30000,
+          foregroundService: { 
+            notificationTitle: 'GPS',
+            notificationBody: ' enabled',
+            notificationColor: '#FF7F27' 
+          }
           });        
         console.log("res"+res);
     }
@@ -76,15 +80,16 @@ class Register extends React.Component {
                           fontFamily: 'montserrat-regular',
                           textAlign: 'center'
                         }}
-                        color="#333"
+                        color="#FF7F27"
                         size={24}
                       >
-                        Register
+                        BSafe
                       </Text>
                     </Block>
 
                     <Block flex={0.5} row middle space="between" style={{ marginBottom: 18 }}>
-                      <GaButton
+                      <Image source = {require('../assets/bsafe.png')} style = {{ width: 80, height: 80 }}/>
+                      {/* <GaButton
                         round
                         onlyIcon
                         shadowless
@@ -95,7 +100,6 @@ class Register extends React.Component {
                         color={nowTheme.COLORS.TWITTER}
                         style={[styles.social, styles.shadow]}
                       />
-
                       <GaButton
                         round
                         onlyIcon
@@ -117,7 +121,7 @@ class Register extends React.Component {
                         iconSize={theme.SIZES.BASE * 1.625}
                         color={nowTheme.COLORS.FACEBOOK}
                         style={[styles.social, styles.shadow]}
-                      />
+                      /> */}
                     </Block>
                   </Block>
                   <Block flex={0.1} middle>
@@ -129,7 +133,7 @@ class Register extends React.Component {
                       muted
                       size={16}
                     >
-                      or be classical
+                      Register
                     </Text>
                   </Block>
                   <Block flex={1} middle space="between">

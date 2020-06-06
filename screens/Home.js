@@ -19,45 +19,13 @@ class Home extends React.Component {
  };
   
   renderArticles = () => {
-    let data = [{
-      value: 'Colombo',
-    },{
-      value: 'Gampaha',
-
-    },{
-      value: 'Kalutara'
-    },{
-      value: 'Ampara'
-    },{
-      value: 'Anuradhapura'
-    },{
-      value: 'Badulla'
-    },{
-      value: 'Batticaloa'
-    },{
-      value: 'Kandy'
-    },{
-      value: 'Kegalle'
-    },{
-      value: 'Nuwara Eliya'
-    },{
-      value: 'Monaragala'
-    },{
-      value: 'Polonnaruwa'
-    },{
-      value: 'Trincomalee'
-    }
-    ];
+    
     return (
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.articles}
       >
-        <Block flex>
-        
-           <Dropdown label='Select District' data={data}/>
-       
-        </Block>
+      
         <Block flex>
         {/* <Card item={articles[0]} horizontal /> */}
         <Block flex row>
