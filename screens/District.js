@@ -1,21 +1,46 @@
 import React from 'react';
 import {
   StyleSheet,
-  ImageBackground,
   Dimensions,
-  StatusBar,
+ Image,
   TouchableWithoutFeedback,
   Keyboard,
-  Vibration,
-  Alert ,
   Picker,
   View,
-  AsyncStorage
 } from 'react-native';
 import { Block, Checkbox, Text, Button as GaButton, theme } from 'galio-framework';
 import { Button, Icon, Input,Card } from '../components';
-import { Images, nowTheme } from '../constants';
+import {  nowTheme } from '../constants';
 import { ScrollView } from 'react-native-gesture-handler';
+
+const images = [
+  require("../assets/imgs/Ampara.png"),   //1
+  require("../assets/imgs/Anuradhapura.png"),//2
+  require("../assets/imgs/Badulla.png"),//3
+  require("../assets/imgs/Batticaloa.png"), //4
+  require("../assets/imgs/Colombo.png"), //5
+  require("../assets/imgs/Galle.png"), //6
+  require("../assets/imgs/Gampaha.png"), //7 
+  require("../assets/imgs/Hambantota.png"),  //8
+  require("../assets/imgs/Jaffna.png"), // 9
+  require("../assets/imgs/Kalutara.png"), //10
+  require("../assets/imgs/Kandy.png"),  //11
+  require("../assets/imgs/Kegalle.png"), //12
+  require("../assets/imgs/Kilinochchi.png"), //13
+  require("../assets/imgs/Kurunegala.png"),  //14
+  require("../assets/imgs/Mannar.png"),  //15
+  require("../assets/imgs/Matara.png"),  //16
+  require("../assets/imgs/Moneragala.png"), //17
+  require("../assets/imgs/Mullaitive.png"), //18
+  require("../assets/imgs/Nuwara Eliya.png"),  //19
+  require("../assets/imgs/Polonnaruwa.png"), //20
+  require("../assets/imgs/Puttalam.png"),  //21
+  require("../assets/imgs/Rathnapura.png"), //22
+  require("../assets/imgs/Trincomalee.png"), //23
+  require("../assets/imgs/Vavuniya.png"),  //24
+  require("../assets/imgs/Matale.png"),  //25
+  
+];
 
 const { width, height } = Dimensions.get('screen');
 
@@ -25,12 +50,11 @@ const DismissKeyboard = ({ children }) => (
 
 class District extends React.Component {
   state = {
-    district:"colombo",
-    coords :{
-        latitude: 0,
-        longitude: 0,
-        
-    }
+   
+    selectedDistrict: 4,
+    cumulative_local:0,
+    cumulative_foreign:0,
+   
   }
 
 
@@ -43,7 +67,7 @@ class District extends React.Component {
    
   
   setSelectedValue = (item) => { 
-  
+    this.setState({selectedDistrict:item});
   }
 
   handlePress=async(e)=>{
@@ -51,6 +75,8 @@ class District extends React.Component {
    }
 
   render() {
+
+    const { selectedDistrict } = this.state;
     return (
       <ScrollView>
       
@@ -59,7 +85,7 @@ class District extends React.Component {
               <Block>
               
                    
-                  <Block flex middle >                  
+                  <Block flex style={{justifyContent:'center'}} >                  
                     <Text
                       style={{
                         fontFamily: 'montserrat-regular',
@@ -70,41 +96,46 @@ class District extends React.Component {
                     >
                        Select a district
                     </Text>
+                 
                   </Block>
-                      <Picker selectedValue = {this.state.district} onValueChange = {this.setSelectedValue} middle>
-                                  <Picker.Item label="Colombo" value="colombo" />                                
-                                  <Picker.Item label="Gampaha" value="gampaha" />                                
-                                  <Picker.Item label="Kalutara" value="kalutara" />
-                                  <Picker.Item label="Polonnaruwa" value="polonnaruwa" />
-                                  <Picker.Item label="Ampara" value="ampara" />
-                                  <Picker.Item label="Anuradhapura" value="anuradhapura" />
-                                  <Picker.Item label="Badulla" value="badulla" />
-                                  <Picker.Item label="Batticaloa" value="batticaloa" />
-                                  <Picker.Item label="Galle" value="galle" />
-                                  <Picker.Item label="Hambantota" value="hambantota" />
-                                  <Picker.Item label="Jaffna" value="jaffna" />
-                                  <Picker.Item label="Kalmunai" value="kalmunai" />
-                                  <Picker.Item label="Kandy" value="kandy" />
-                                  <Picker.Item label="Kegalle" value="kegalle" />
-                                  <Picker.Item label="Kilinochchi" value="kilinochchi" />
-                                  <Picker.Item label="Kurunegala" value="kurunegala" />
-                                  <Picker.Item label="Kalmunai" value="mannar" />
-                                  <Picker.Item label="Kalmunai" value="matale" />
-                                  <Picker.Item label="Kalmunai" value="matara" />
-                                  <Picker.Item label="Kalmunai" value="monaragala" />
-                                  <Picker.Item label="Kalmunai" value="mullaitivu" />
-                                  <Picker.Item label="Nuwara Eliya" value="nuwara" />
-                                  <Picker.Item label="Kalmunai" value="puttalam" />
-                                  <Picker.Item label="Kalmunai" value="ratnapura" />
-                                  <Picker.Item label="Kalmunai" value="trincomalee" />
-                                  <Picker.Item label="Kalmunai" value="vavuniya" />
+                      <Picker selectedValue = {this.state.selectedDistrict} onValueChange = {this.setSelectedValue} middle>
+                                  <Picker.Item label="Colombo" value="4" />                                
+                                  <Picker.Item label="Gampaha" value="6" />                                
+                                  <Picker.Item label="Kalutara" value="9" />
+                                  <Picker.Item label="Polonnaruwa" value="19" />
+                                  <Picker.Item label="Ampara" value="0" />
+                                  <Picker.Item label="Anuradhapura" value="1" />
+                                  <Picker.Item label="Badulla" value="2" />
+                                  <Picker.Item label="Batticaloa" value="3" />
+                                  <Picker.Item label="Galle" value="5" />
+                                  <Picker.Item label="Hambantota" value="7" />
+                                  <Picker.Item label="Jaffna" value="8" />
+                                  <Picker.Item label="Kandy" value="10" />
+                                  <Picker.Item label="Kegalle" value="11" />
+                                  <Picker.Item label="Kilinochchi" value="12" />
+                                  <Picker.Item label="Kurunegala" value="13" />
+                                  <Picker.Item label="Mannar" value="14" />
+                                  <Picker.Item label="Matale" value="24" />
+                                  <Picker.Item label="Matara" value="15" />
+                                  <Picker.Item label="Monaragala" value="16" />
+                                  <Picker.Item label="Mullaitivu" value="17" />
+                                  <Picker.Item label="Nuwara Eliya" value="18" />
+                                  <Picker.Item label="Puttalam" value="20" />
+                                  <Picker.Item label="Ratnapura" value="21" />
+                                  <Picker.Item label="Trincomalee" value="22" />
+                                  <Picker.Item label="Vavuniya" value="23" />
                                   
                               </Picker>                                                        
-                                                 
-                        
+                          
+                              <Image   source={images[this.state.selectedDistrict]}
+                               style={styles.districtImage}
+                              />
+
+                            
+                         
                       
                         <Block flex>
-        {/* <Card item={articles[0]} horizontal /> */}
+     
         <Block flex row>
             <Card
               item={{
@@ -112,7 +143,7 @@ class District extends React.Component {
                 image: require("../assets/imgs/ac.jpg"),
                 // description: `${this.state.local_total_cases}`
               }}
-              style={{ marginRight: theme.SIZES.BASE}}
+           
             >
             
               </Card>
@@ -144,15 +175,17 @@ class District extends React.Component {
             }} />
           </Block>
           <Block flex row>
-            <Card
-              item={{
-                title: 'Hospital data from :',
-               
-                // description: `${this.state.local_recovered}`
-              }}
-              style={{ marginRight: theme.SIZES.BASE }}
-            />
-         
+          <Text
+                      style={{
+                       
+                        textAlign: 'center'
+                      }}
+                      color="#333"
+                      size={20}
+                    >
+                       Hospital data from :
+                    </Text>
+
           </Block>
        
         </Block>
@@ -167,6 +200,35 @@ class District extends React.Component {
       </ScrollView>
     );
   
+};
+async newsFetch(){
+
+   
+  fetch(
+    `https://hpb.health.gov.lk/api/get-current-statistical`
+  )
+  .then(res => res.json())
+  .then(data => {
+
+
+  // console.log("hospital cumulative local = "+data.data.hospital_data);
+
+ 
+
+    this.setState({
+      // global_total_cases: this.thousands_separators(data.data.global_total_cases),
+     
+     
+      });
+  });
+ 
+ }
+
+
+async componentDidMount() {     
+  console.log("app test")
+
+  this.newsFetch();
 }
 }
 
@@ -180,6 +242,12 @@ const styles = StyleSheet.create({
   imageBackground: {
     width: width,
     height: height
+  },
+  districtImage:{
+     width: 450,
+      height: 220, 
+      marginLeft: 40,
+      justifyContent:"center" 
   },
   visitsContainer: {
     marginTop: 55,
