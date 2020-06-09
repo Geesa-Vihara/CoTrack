@@ -1,7 +1,6 @@
 import React from "react";
 import { StyleSheet, Dimensions, ScrollView} from "react-native";
 import { Block, theme, Text } from "galio-framework";
-import {Dropdown } from 'react-native-material-dropdown';
 import { Card, Button } from "../components";
 const { width } = Dimensions.get('screen');
 
