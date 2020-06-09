@@ -32,7 +32,7 @@ const images = [
   require("../assets/imgs/Matara.png"),  //16
   require("../assets/imgs/Moneragala.png"), //17
   require("../assets/imgs/Mullaitive.png"), //18
-  require("../assets/imgs/Nuwara Eliya.png"),  //19
+  require("../assets/imgs/Nuwara-Eliya.png"),  //19
   require("../assets/imgs/Polonnaruwa.png"), //20
   require("../assets/imgs/Puttalam.png"),  //21
   require("../assets/imgs/Rathnapura.png"), //22
@@ -43,6 +43,7 @@ const images = [
 ];
 
 const { width, height } = Dimensions.get('screen');
+var n = 0;
 
 const DismissKeyboard = ({ children }) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>{children}</TouchableWithoutFeedback>
@@ -54,37 +55,26 @@ class District extends React.Component {
     selectedDistrict: 4,
     cumulative_local:0,
     cumulative_foreign:0,
+    total1 :0,
+    total2 :0,
+    total3 :0,
    
   }
 
 
-  
-
-
-  handleSubmit = async() => {
- 
-    }
    
   
   setSelectedValue = (item) => { 
     this.setState({selectedDistrict:item});
   }
 
-  handlePress=async(e)=>{
-    
-   }
-
   render() {
 
     const { selectedDistrict } = this.state;
     return (
-      <ScrollView>
-      
-         
+      <ScrollView>  
             <Block >
               <Block>
-              
-                   
                   <Block flex style={{justifyContent:'center'}} >                  
                     <Text
                       style={{
@@ -92,11 +82,10 @@ class District extends React.Component {
                         textAlign: 'center'
                       }}
                       color="#333"
-                      size={24}
+                      size={20}
                     >
-                       Select a district
-                    </Text>
-                 
+                       Select a District
+                    </Text>                 
                   </Block>
                       <Picker selectedValue = {this.state.selectedDistrict} onValueChange = {this.setSelectedValue} middle>
                                   <Picker.Item label="Colombo" value="4" />                                
@@ -123,86 +112,71 @@ class District extends React.Component {
                                   <Picker.Item label="Puttalam" value="20" />
                                   <Picker.Item label="Ratnapura" value="21" />
                                   <Picker.Item label="Trincomalee" value="22" />
-                                  <Picker.Item label="Vavuniya" value="23" />
-                                  
+                                  <Picker.Item label="Vavuniya" value="23" />                                  
                               </Picker>                                                        
-                          
-                              <Image   source={images[this.state.selectedDistrict]}
-                               style={styles.districtImage}
-                              />
-
-                            
-                         
-                      
-                        <Block flex>
-     
-        <Block flex row>
-            <Card
-              item={{
-                title: 'Cumulative local',
-                image: require("../assets/imgs/ac.jpg"),
-                // description: `${this.state.local_total_cases}`
-              }}
-           
-            >
-            
-              </Card>
-            
-
-</Block>
-<Block flex row>
-           
-            <Card item={{
-                title: 'Cumulative foreign',
-                image: require("../assets/imgs/active.jpg"),       
-                // description: `${this.state.local_active_cases}`
-            }} />
-
-</Block>
-          <Block flex row>
-            <Card
-              item={{
-                title: 'Treatment local',
-                image: require("../assets/imgs/tcc.jpg"),
-                // description: `${this.state.local_new_cases}`
-              }}
-              style={{ marginRight: theme.SIZES.BASE }}
-            />
-            <Card item={{
-                title: 'Treatment foreign',
-                image: require("../assets/imgs/ui.jpg"),
-                // description: `${this.state.local_total_number_of_individuals_in_hospitals}`
-            }} />
-          </Block>
-          <Block flex row>
-          <Text
-                      style={{
-                       
-                        textAlign: 'center'
-                      }}
-                      color="#333"
-                      size={20}
-                    >
-                       Hospital data from :
-                    </Text>
-
-          </Block>
-       
-        </Block>
-                           
-                </Block>
-             
-              </Block>
-             
-           
-         
-       
-      </ScrollView>
+                            <Block center>
+                              <Image 
+                                  source={images[this.state.selectedDistrict]}
+                                  resizeMode="contain"
+                                  style={styles.districtImage}
+                                />
+                                </Block>                  
+                            <Block flex center style={{  width: Dimensions.get("screen").width - theme.SIZES.BASE }}>     
+                              <Block flex row >
+                                  <Card
+                                    item={{
+                                      title: 'Cumulative local',
+                                      image: require("../assets/imgs/ac.jpg"),
+                                      description: `${this.state.total1}`
+                                    }}
+                                  >                                  
+                                  </Card>
+                              </Block>
+                              <Block flex row>                                        
+                                <Card item={{
+                                    title: 'Cumulative foreign',
+                                    image: require("../assets/imgs/active.jpg"),       
+                                    // description: `${this.state.local_active_cases}`
+                                }} />
+                              </Block>
+                              <Block flex row>
+                                <Card
+                                  item={{
+                                    title: 'Treatment local',
+                                    image: require("../assets/imgs/tcc.jpg"),
+                                    // description: `${this.state.local_new_cases}`
+                                  }}
+                                  style={{ marginRight: theme.SIZES.BASE }}
+                                />
+                                <Card item={{
+                                    title: 'Treatment foreign',
+                                    image: require("../assets/imgs/ui.jpg"),
+                                    // description: `${this.state.local_total_number_of_individuals_in_hospitals}`
+                                }} />
+                              </Block>
+                              <Block flex row>
+                                <Text
+                                  style={{                                    
+                                    textAlign: 'center'
+                                  }}
+                                  //color="#333"
+                                  size={13}
+                                  muted
+                                >
+                                    Hospital data from :
+                                </Text>
+                              </Block>       
+                            </Block>                           
+                          </Block>
+                        </Block>
+                      </ScrollView>
     );
   
-};
-async newsFetch(){
+}
 
+
+async newsFetch(id){
+   
    
   fetch(
     `https://hpb.health.gov.lk/api/get-current-statistical`
@@ -210,28 +184,39 @@ async newsFetch(){
   .then(res => res.json())
   .then(data => {
 
-
-  // console.log("hospital cumulative local = "+data.data.hospital_data);
-
- 
+     
+      console.log("local newww" + data.data.hospital_data[id-1].cumulative_local);
+    
+    n = n+  data.data.hospital_data[id-1].cumulative_local;
 
     this.setState({
-      // global_total_cases: this.thousands_separators(data.data.global_total_cases),
      
+        total1 : n
      
       });
   });
+
  
  }
 
+ async componentDidMount() {    
 
-async componentDidMount() {     
-  console.log("app test")
-
-  this.newsFetch();
+  console.log(this.state.selectedDistrict);
+   if(this.state.selectedDistrict == 4){
+ this.newsFetch(1);
+ this.newsFetch(2);
+this.newsFetch(3);
+this.newsFetch(14);
+this.newsFetch(15);
+this.newsFetch(18);
+this.newsFetch(24);
+this.newsFetch(32)
+   }else if(this.state.selectedDistrict == 1){
+     this.newsFetch(5);
+   }
 }
-}
 
+}
 const styles = StyleSheet.create({
   imageBackgroundContainer: {
     width: width,
@@ -244,10 +229,10 @@ const styles = StyleSheet.create({
     height: height
   },
   districtImage:{
-     width: 450,
-      height: 220, 
-      marginLeft: 40,
-      justifyContent:"center" 
+    //width: width,
+    height: height/4, 
+    //marginLeft: 40,
+    //justifyContent:"center" 
   },
   visitsContainer: {
     marginTop: 55,
