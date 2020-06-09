@@ -61,11 +61,128 @@ class District extends React.Component {
    
   }
 
+  async newsFetch(id){
+    fetch(
+      `https://hpb.health.gov.lk/api/get-current-statistical`
+    )
+    .then(res => res.json())
+    .then(data => {
+  
+        console.log("local newww" + data.data.hospital_data[id-1].cumulative_local);
+        n = n+ data.data.hospital_data[id-1].cumulative_local;
+  
+      this.setState({
+          total1 : n
+        });
+    });
+   }
 
-   
+
+  districtHospital(item) {    
+
+    this.setState({
+      total1 : 0,
+    });
+    console.log(item);
+     if(item == 4){
+            this.newsFetch(1);
+            this.newsFetch(2);
+            this.newsFetch(3);
+            this.newsFetch(14);
+            this.newsFetch(15);
+            this.newsFetch(18);
+            this.newsFetch(24);
+            this.newsFetch(32);
+            this.newsFetch(25);
+            this.newsFetch(26);
+            this.newsFetch(29);
+     }else if(item == 0){
+      //  this.newsFetch();
+     }else if(item == 1){
+            this.newsFetch(5);
+     }else if(item == 2){
+            this.newsFetch(13);
+     }else if(item == 3){
+            this.newsFetch(9);
+            this.newsFetch(34);
+     }
+     else if(item == 5){
+           this.newsFetch(4);
+     }
+     else if(item == 6){
+            this.newsFetch(10);
+            this.newsFetch(11);
+            this.newsFetch(23);
+            this.newsFetch(35);
+            this.newsFetch(36);
+     }
+     else if(item == 7){
+           this.newsFetch(19);
+     }
+     else if(item == 8){
+          this.newsFetch(7);
+     }
+     else if(item == 9){
+           this.newsFetch(22);
+           this.newsFetch(33);
+     }
+     else if(item == 10){
+           this.newsFetch(8);
+     }
+     else if(item == 11){
+          //  this.newsFetch(9);
+     }
+     else if(item == 12){
+          // this.newsFetch(9);
+     }
+     else if(item == 13){
+           this.newsFetch(6);
+     }
+     else if(item == 14){
+          // this.newsFetch();
+     }
+     else if(item == 15){
+           this.newsFetch(28);
+     }
+     else if(item == 16){
+          this.newsFetch(20);
+     }
+     else if(item == 17){
+          // this.newsFetch(9);
+     }
+     else if(item == 18){
+         // this.newsFetch(9);
+     }
+     else if(item == 19){
+          this.newsFetch(16);
+          this.newsFetch(21);
+     }
+     else if(item == 20){
+          this.newsFetch(27);
+          this.newsFetch(31);
+     }
+     else if(item == 21){
+           this.newsFetch(12);
+     }
+     else if(item == 22){
+          // this.newsFetch(9);
+     }
+     else if(item == 23){
+          this.newsFetch(30);
+     }
+     else if(item == 24){
+          // this.newsFetch(9);
+     }
+  }
   
   setSelectedValue = (item) => { 
-    this.setState({selectedDistrict:item});
+    this.setState({
+      selectedDistrict:item,
+    
+    });
+    n=0;
+    this.districtHospital(item);
+    
   }
 
   render() {
@@ -120,7 +237,7 @@ class District extends React.Component {
                                   resizeMode="contain"
                                   style={styles.districtImage}
                                 />
-                                </Block>                  
+                            </Block>                      
                             <Block flex center style={{  width: Dimensions.get("screen").width - theme.SIZES.BASE }}>     
                               <Block flex row >
                                   <Card
@@ -175,46 +292,11 @@ class District extends React.Component {
 }
 
 
-async newsFetch(id){
-   
-   
-  fetch(
-    `https://hpb.health.gov.lk/api/get-current-statistical`
-  )
-  .then(res => res.json())
-  .then(data => {
 
-     
-      console.log("local newww" + data.data.hospital_data[id-1].cumulative_local);
-    
-    n = n+  data.data.hospital_data[id-1].cumulative_local;
 
-    this.setState({
-     
-        total1 : n
-     
-      });
-  });
-
- 
+ async componentDidMount(){
+   this.districtHospital(4);
  }
-
- async componentDidMount() {    
-
-  console.log(this.state.selectedDistrict);
-   if(this.state.selectedDistrict == 4){
- this.newsFetch(1);
- this.newsFetch(2);
-this.newsFetch(3);
-this.newsFetch(14);
-this.newsFetch(15);
-this.newsFetch(18);
-this.newsFetch(24);
-this.newsFetch(32)
-   }else if(this.state.selectedDistrict == 1){
-     this.newsFetch(5);
-   }
-}
 
 }
 const styles = StyleSheet.create({
