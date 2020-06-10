@@ -43,8 +43,10 @@ const images = [
 ];
 
 const { width, height } = Dimensions.get('screen');
-var n = 0;
-
+var c_local = 0;
+var c_foreign =0;
+var t_lolcal = 0;
+var t_foreign =0;
 const DismissKeyboard = ({ children }) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>{children}</TouchableWithoutFeedback>
 );
@@ -58,6 +60,7 @@ class District extends React.Component {
     total1 :0,
     total2 :0,
     total3 :0,
+    total4:0,
    
   }
 
@@ -69,10 +72,13 @@ class District extends React.Component {
     .then(data => {
   
         console.log("local newww" + data.data.hospital_data[id-1].cumulative_local);
-        n = n+ data.data.hospital_data[id-1].cumulative_local;
-  
+        c_local = c_local+ data.data.hospital_data[id-1].cumulative_local;
+        c_foreign = c_foreign + data.data.hospital_data[id-1].cumulative_foreign;
+        t_lolcal = t_lolcal + data.data.hospital_data[id-1].treatment_local;
       this.setState({
-          total1 : n
+          total1 : c_local,
+          total2 : c_foreign,
+          total3 : t_lolcal
         });
     });
    }
@@ -82,6 +88,8 @@ class District extends React.Component {
 
     this.setState({
       total1 : 0,
+      total2 :0,
+      total3: 0,
     });
     console.log(item);
      if(item == 4){
@@ -180,7 +188,9 @@ class District extends React.Component {
       selectedDistrict:item,
     
     });
-    n=0;
+    c_local=0;
+    c_foreign=0;
+    t_lolcal=0;
     this.districtHospital(item);
     
   }
@@ -248,12 +258,12 @@ class District extends React.Component {
                                     }}
                                   >                                  
                                   </Card>
-                              </Block>
-                              <Block flex row>                                        
+                              {/* </Block>
+                              <Block flex row>                                         */}
                                 <Card item={{
                                     title: 'Cumulative foreign',
                                     image: require("../assets/imgs/active.jpg"),       
-                                    // description: `${this.state.local_active_cases}`
+                                    description: `${this.state.total2}`
                                 }} />
                               </Block>
                               <Block flex row>
@@ -261,12 +271,27 @@ class District extends React.Component {
                                   item={{
                                     title: 'Treatment local',
                                     image: require("../assets/imgs/tcc.jpg"),
-                                    // description: `${this.state.local_new_cases}`
+                                    description: `${this.state.total3}`
                                   }}
                                   style={{ marginRight: theme.SIZES.BASE }}
                                 />
                                 <Card item={{
                                     title: 'Treatment foreign',
+                                    image: require("../assets/imgs/ui.jpg"),
+                                    // description: `${this.state.local_total_number_of_individuals_in_hospitals}`
+                                }} />
+                              </Block>
+                              <Block flex row>
+                                <Card
+                                  item={{
+                                    title: 'Cumallative total',
+                                    image: require("../assets/imgs/tcc.jpg"),
+                                    // description: `${this.state.local_new_cases}`
+                                  }}
+                                  style={{ marginRight: theme.SIZES.BASE }}
+                                />
+                                <Card item={{
+                                    title: 'Treatment total',
                                     image: require("../assets/imgs/ui.jpg"),
                                     // description: `${this.state.local_total_number_of_individuals_in_hospitals}`
                                 }} />
