@@ -12,6 +12,7 @@ import { Block, Checkbox, Text, Button as GaButton, theme } from 'galio-framewor
 import { Button, Icon, Input,Card } from '../components';
 import {  nowTheme } from '../constants';
 import { ScrollView } from 'react-native-gesture-handler';
+//import Unorderedlist from 'react-native-unordered-list';
 
 const images = [
   require("../assets/imgs/Ampara.png"),   //1
@@ -77,12 +78,16 @@ class District extends React.Component {
     .then(data => {
   
         console.log("local newww" +  data.data.hospital_data[id-1].hospital.name);
+        console.log("vvvv"+HospitalArray);
         c_local = c_local+ data.data.hospital_data[id-1].cumulative_local;
         c_foreign = c_foreign + data.data.hospital_data[id-1].cumulative_foreign;
         t_local = t_local + data.data.hospital_data[id-1].treatment_local;
         total_local = total_local + data.data.hospital_data[id-1].cumulative_total;
         total_foreign = total_foreign + data.data.hospital_data[id-1].treatment_total;
         HospitalArray= data.data.hospital_data[id-1].hospital.name;
+
+  
+        this.state.Harray.push({HospitalArray})
       this.setState({
           total1 : this.thousands_separators(c_local),
           total2 : this.thousands_separators(c_foreign),
@@ -90,8 +95,9 @@ class District extends React.Component {
           total4 : this.thousands_separators(t_foreign),
           total5 : this.thousands_separators(total_local),
           total6 : this.thousands_separators(total_foreign),
-          Harray : HospitalArray,
+          // Harray : HospitalArray,
         });
+        
     });
    }
 
@@ -209,7 +215,7 @@ class District extends React.Component {
     t_foreign=0;
     total_local=0;
     total_foreign=0;
-    HospitalArray = null;
+    // HospitalArray = null;
     this.districtHospital(item);
     
   }
@@ -285,8 +291,8 @@ class District extends React.Component {
                                     }}
                                   >                                  
                                   </Card>
-                              {/* </Block>
-                              <Block flex row>                                         */}
+                              </Block>
+                              <Block flex row>                                        
                                 <Card item={{
                                     title: 'Cumulative foreign',
                                     image: require("../assets/imgs/active.jpg"),       
@@ -308,7 +314,7 @@ class District extends React.Component {
                                     description: `${this.state.total4}`
                                 }} />
                               </Block>
-                              <Block flex row>
+                              {/* <Block flex row>
                                 <Card
                                   item={{
                                     title: 'Cumallative total',
@@ -322,7 +328,7 @@ class District extends React.Component {
                                     image: require("../assets/imgs/ui.jpg"),
                                     description: `${this.state.total6}`
                                 }} />
-                              </Block>
+                              </Block> */}
                               <Block flex row>
                                 <Text
                                   style={{                                    
@@ -334,13 +340,16 @@ class District extends React.Component {
                                 >
                                     Hospital data from :
                                 </Text>
-                                {/* {SSS.map(item => (
-                                <li key={item}>{item}</li> */}
-                                {/* {this.state.Harray.map(function(item, i){
-                                   console.log('test');
-                                    return <li>Test</li>
-                                            })} */}
+                             
+                            
+                                <Text>
+                                {this.state.Harray.map(function(item){
                                 
+                                return   <Text>{item.HospitalArray}</Text>
+                                            })}
+                         
+                                       </Text>
+
                               </Block>       
                             </Block>                           
                           </Block>
