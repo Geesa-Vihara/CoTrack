@@ -12,7 +12,8 @@ import { Block, Checkbox, Text, Button as GaButton, theme } from 'galio-framewor
 import { Button, Icon, Input,Card } from '../components';
 import {  nowTheme } from '../constants';
 import { ScrollView } from 'react-native-gesture-handler';
-//import Unorderedlist from 'react-native-unordered-list';
+import Unorderedlist from 'react-native-unordered-list';
+
 
 const images = [
   require("../assets/imgs/Ampara.png"),   //1
@@ -111,6 +112,7 @@ class District extends React.Component {
       total4 :0,
       total5 :0,
       total6 :0,
+    
     });
     console.log(item);
      if(item == 4){
@@ -207,7 +209,8 @@ class District extends React.Component {
   setSelectedValue = (item) => { 
     this.setState({
       selectedDistrict:item,
-    
+      
+      
     });
     c_local=0;
     c_foreign=0;
@@ -215,7 +218,7 @@ class District extends React.Component {
     t_foreign=0;
     total_local=0;
     total_foreign=0;
-    // HospitalArray = null;
+     HospitalArray = null;
     this.districtHospital(item);
     
   }
@@ -233,6 +236,7 @@ class District extends React.Component {
    var SSS = [1,2,3,4,5]
     return (
       <ScrollView>  
+
             <Block >
               <Block>
                   <Block flex style={{justifyContent:'center'}} >                  
@@ -298,6 +302,7 @@ class District extends React.Component {
                                     image: require("../assets/imgs/active.jpg"),       
                                     description: `${this.state.total2}`
                                 }} />
+
                               </Block>
                               <Block flex row>
                                 <Card
@@ -330,30 +335,38 @@ class District extends React.Component {
                                 }} />
                               </Block> */}
                               <Block flex row>
-                                <Text
-                                  style={{                                    
-                                    textAlign: 'center'
-                                  }}
-                                  //color="#333"
-                                  size={13}
-                                  muted
-                                >
-                                    Hospital data from :
-                                </Text>
-                             
-                            
-                                <Text>
+                               
+                               <Text>Hospital data from    : {`\n`}</Text>
+                               
+                                <Block>
+                                
+                                    
+                                  
                                 {this.state.Harray.map(function(item){
                                 
-                                return   <Text>{item.HospitalArray}</Text>
+                                return  (
+                                  <View style={{flexDirection: 'row'}}>
+                                    <Text>{'\u2022'}</Text>
+                                    <Text>{item.HospitalArray}</Text>
+                                  </View>
+                                );
+
+
+
+
+
+                               
                                             })}
                          
-                                       </Text>
-
+                                      
+                        
+                                        </Block>
                               </Block>       
                             </Block>                           
                           </Block>
                         </Block>
+
+                 
                       </ScrollView>
     );
   
