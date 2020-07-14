@@ -1,6 +1,6 @@
 # PROJECT BSAFE
 
- This is a mobile applications that helps to keep the community safe from Covid 19 pandemic
+ This is a mobile applications that helps to keep the community safe from Covid 19 pandemic <br>
  This project is ejected from Expo to React native and the renewed project is at https://github.com/Geesa-Vihara/BSafe
 
 
